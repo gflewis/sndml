@@ -140,6 +140,7 @@
   
     <resources>
       <resource>
+        <!--  Cause /src/main/resources/version.properts to be updated -->
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
