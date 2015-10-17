@@ -28,9 +28,9 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>ojdbc6</groupId>
+      <groupId>com.oracle</groupId>
       <artifactId>ojdbc6</artifactId>
-      <version>6.0</version>
+      <version>12.1.0.2</version>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
@@ -123,13 +123,6 @@
       <version>2.0</version>
     </dependency>
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>WMC Artifactory</id>
-      <url>http://prod-mvn-repo/repo</url>
-    </repository>
-  </repositories>
 
   <build>
   
