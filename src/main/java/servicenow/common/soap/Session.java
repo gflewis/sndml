@@ -121,7 +121,7 @@ public class Session {
 		assert userProfile != null;
 		logger.info(username + " timezone=" + getTimeZone() + " sessionid=" + getSessionID());
 		if (!"GMT".equals(getTimeZone())) {
-			logger.warn("user \" + username + \" time zone is not GMT");
+			logger.warn("user \"" + username + "\" time zone is not GMT");
 		}
 	}
 
