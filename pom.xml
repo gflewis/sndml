@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>servicenow.common.datamart</groupId>
   <artifactId>sndml</artifactId>
-  <version>2.3.01</version>
+  <version>2.3.2</version>
   <name>ServiceNow Datamart Loader</name>
 
   <properties>
@@ -248,7 +248,6 @@
                   <include>mysql:*</include>
                   <include>org.apache.commons:*</include>
                   <include>commons-*:*</include>
-                  <include>com.rabbitmq:*</include>
                   <include>org.jdom:*</include>
                   <include>org.slf4j:*</include>
                   <include>log4j:*</include>
