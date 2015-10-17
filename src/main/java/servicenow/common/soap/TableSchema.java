@@ -70,7 +70,8 @@ public class TableSchema {
 			}
 		}
 		if (empty) {
-			logger.error("Unable to read schema for: " + tablename);
+			logger.error("Unable to read schema for: " + tablename +
+				" (check access controls for sys_dictionary and sys_db_object)");
 			if (tablename.equals("sys_db_object") || tablename.equals("sys_dictionary"))
 				throw new InsufficientRightsException(table, "getRecords",
 					"Unable to read " + tablename);

@@ -143,6 +143,9 @@ public class Table {
 		if (schema != null) return schema;
 		try {
 			schema = new TableSchema(this);
+		}
+		  catch (InvalidTableNameException e) {
+		    throw new SchemaNotAvailableException(e);
 		} catch (IOException e) {
 			throw new SchemaNotAvailableException(e);
 		} catch (JDOMException e) {
