@@ -31,7 +31,7 @@
       <!--
         to add ojdbc6 to local repo
           mvn install:install-file -Dfile=ojdbc6.jar
-          -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=12.2.0.2
+          -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=12.1.0.2
           -Dpackaging=jar -DgeneratePom=true 
         -->
       <groupId>com.oracle</groupId>
@@ -43,13 +43,13 @@
     <dependency>
        <!--
         to add sqljdbc4 to local repo
-          mvn install:install-file -Dfile=ojdbc6.jar
-          -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc4 -Dversion=4.0
+          mvn install:install-file -Dfile=sqljdbc.jar
+          -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc -Dversion=4.1
           -Dpackaging=jar -DgeneratePom=true 
         -->
       <groupId>com.microsoft.sqlserver</groupId>
-      <artifactId>sqljdbc4</artifactId>
-      <version>4.0</version>
+      <artifactId>sqljdbc</artifactId>
+      <version>4.1</version>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
