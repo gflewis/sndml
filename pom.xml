@@ -61,7 +61,7 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-	  <groupId>mysql</groupId>
+    <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.30</version>
       <optional>true</optional>
@@ -76,21 +76,21 @@
        <artifactId>amqp-client</artifactId>
        <version>3.4.1</version>
     </dependency>    
-	<dependency>
-	  <groupId>org.slf4j</groupId>
-	  <artifactId>slf4j-api</artifactId>
-	  <version>1.7.7</version>
-	</dependency>
-   	<dependency> 
-	  <groupId>org.slf4j</groupId>
-	  <artifactId>slf4j-log4j12</artifactId>
-	  <version>1.7.7</version>
-	</dependency>
-	<dependency>
-	  <groupId>log4j</groupId>
-	  <artifactId>log4j</artifactId>
-	  <version>1.2.17</version>
-	</dependency>
+  <dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>1.7.7</version>
+  </dependency>
+     <dependency> 
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-log4j12</artifactId>
+    <version>1.7.7</version>
+  </dependency>
+  <dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.17</version>
+  </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -125,9 +125,9 @@
       <!-- This is not a real dependency. 
            It is an undeclared dependency from commons-configuration. --> 
       <groupId>commons-collections</groupId>
-	  <artifactId>commons-collections</artifactId>
-	  <version>3.0</version>
-	  <scope>provided</scope>
+    <artifactId>commons-collections</artifactId>
+    <version>3.0</version>
+    <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.opencsv</groupId>
@@ -140,13 +140,14 @@
   
     <resources>
       <resource>
-        <!--  Cause /src/main/resources/version.properts to be updated -->
+        <!--  Cause /src/main/resources/version.properties to be updated -->
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
   
     <plugins>
+    
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
@@ -154,6 +155,7 @@
             <target>1.7</target>
           </configuration>
       </plugin>
+      
       <plugin>
         <!--  Skip Unit Tests -->
         <groupId>org.apache.maven.plugins</groupId>
@@ -163,6 +165,7 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -176,6 +179,7 @@
           </execution>
         </executions>
       </plugin>
+            
       <plugin>
         <!-- JavaDoc -->
         <groupId>org.apache.maven.plugins</groupId>
@@ -190,16 +194,68 @@
           </execution>
         </executions>
         <configuration>
-	      <show>private</show>
-	      <excludePackageNames>servicenow.common.csv</excludePackageNames>
-	    </configuration>
+        <show>private</show>
+        <excludePackageNames>servicenow.common.csv</excludePackageNames>
+      </configuration>
       </plugin>
 
+      <!-- 
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <manifest>
+            <mainClass>servicenow.common.datamart.Loader</mainClass>
+          </manifest>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>assembly</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin> 
+      -->
+      
       <plugin>           
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.2</version>
+        <version>2.4.1</version>
         <executions>
+          <execution>
+            <!--  MySQL JAR -->
+            <id>mysql</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>            
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>mysql</shadedClassifierName>
+              <transformers>
+                <transformer implementation=
+                  "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>servicenow.common.datamart.Loader</mainClass>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <includes>
+                  <include>mysql:*</include>
+                  <include>org.apache.commons:*</include>
+                  <include>commons-*:*</include>
+                  <include>com.rabbitmq:*</include>
+                  <include>org.jdom:*</include>
+                  <include>org.slf4j:*</include>
+                  <include>log4j:*</include>
+                </includes>
+              </artifactSet>
+            </configuration>
+          </execution>
           <!-- Oracle JAR -->
           <execution>
             <id>ora</id>
@@ -209,7 +265,13 @@
             </goals>
             <configuration>
               <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>ora</shadedClassifierName>
+              <shadedClassifierName>ora</shadedClassifierName>             
+              <transformers>
+                <transformer implementation=
+                  "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>servicenow.common.datamart.Loader</mainClass>
+                </transformer>
+              </transformers>
               <artifactSet>
                 <includes>
                   <include>ojdbc6:ojdbc6</include>
@@ -233,6 +295,12 @@
             <configuration>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>postgres</shadedClassifierName>
+              <transformers>
+                <transformer implementation=
+                  "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>servicenow.common.datamart.Loader</mainClass>
+                </transformer>
+              </transformers>
               <artifactSet>
                 <includes>
                   <include>postgresql:postgresql</include>
@@ -256,32 +324,15 @@
             <configuration>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>mssql</shadedClassifierName>
+              <transformers>
+                <transformer implementation=
+                  "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>servicenow.common.datamart.Loader</mainClass>
+                </transformer>
+              </transformers>
               <artifactSet>
                 <includes>
                   <include>com.microsoft.sqlserver:sqljdbc4</include>
-                  <include>org.apache.commons:*</include>
-                  <include>commons-*:*</include>
-                  <include>com.rabbitmq:*</include>
-                  <include>org.jdom:*</include>
-                  <include>org.slf4j:*</include>
-                  <include>log4j:*</include>
-                </includes>
-              </artifactSet>
-            </configuration>
-          </execution>
-          <execution>
-            <!--  MySQL JAR -->
-            <id>mysql</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>mysql</shadedClassifierName>
-              <artifactSet>
-                <includes>
-                  <include>mysql:*</include>
                   <include>org.apache.commons:*</include>
                   <include>commons-*:*</include>
                   <include>com.rabbitmq:*</include>

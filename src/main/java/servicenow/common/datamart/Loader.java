@@ -195,7 +195,7 @@ public class Loader {
 		String text =
 			"-p <filename>          Property file (required)\n" +
 			"-f <filename>          Specify script file\n" +
-			"-e \"<command>\"       Execute a command\n" +
+			"-e \"<command>\"         Execute a command\n" +
 			"-js <suite>            Specify name of suite\n" +
 			"-js <suite> -resume    Resume a cancelled or aborted suite\n" +
 			"-cancel                Cancel currently running suites\n";
