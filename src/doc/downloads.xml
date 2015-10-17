@@ -1,0 +1,37 @@
+<doc name="downloads" title="Downloads">
+<h2>Downloads</h2>
+<ul>
+<table>
+  <tr>
+    <th>File</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><link url="sn-datapump-@version@.jar"/></td>
+    <td>Java source code and classes for the ServiceNow DataPump</td>
+  </tr>
+  <tr>
+    <td><link url="sqltemplates.xml"/></td>
+    <td>Contains data type mappings and templates for SQL statements</td>
+  </tr>
+  <tr>
+    <td><link url="datapump.properties"/></td>
+    <td>Sample properties for the DataPump</td>
+  </tr>
+  <tr>
+    <td><link url="log4j.properties"/></td>
+    <td>Sample log4j configuration file</td>
+  </tr>
+  <tr>
+    <td><link url="UpdateSets.zip"/></td>
+    <td>Update Sets for use in GUI mode</td>
+  </tr>
+  <tr>
+    <td><link url="ServiceNowDataPump-@version@.zip"/></td>
+    <td><join>All files listed above plus JAR files for
+    JDOM, Log4J and Commons-Lang,
+    plus the contents of this web site.</join></td>
+  </tr>
+</table>
+</ul>
+</doc>
