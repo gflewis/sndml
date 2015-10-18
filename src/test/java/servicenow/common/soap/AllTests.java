@@ -38,7 +38,7 @@ public class AllTests {
 	
 	static Session session = null;
 	static Properties properties = null;
-	static String propFileName = "mysql.junit.properties";
+	static String propFileName = "awsmysql.properties";
 	static Logger logger = junitLogger(AllTests.class);
 	
 	public static Logger junitLogger(@SuppressWarnings("rawtypes") Class c) {

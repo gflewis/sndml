@@ -31,7 +31,7 @@ public class SessionTest {
 		Properties prop = AllTests.getProperties();
 		String username = prop.getProperty("servicenow.username");
 		assertNotNull(username);
-		assertTrue(username.equals("soap.junit") || username.equals("soap.sndm"));
+		assertTrue(username.startsWith("soap."));
 	}
 	
 	@Test

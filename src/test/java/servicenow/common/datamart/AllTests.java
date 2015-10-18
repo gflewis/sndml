@@ -57,7 +57,7 @@ import servicenow.common.soap.Session;
 
 public class AllTests {
 
-	static String propFileName = "mysql.junit.properties";
+	static String propFileName = "awsmysql.properties";
 	
 	private static Properties properties = null;
 	private static Session session = null;
