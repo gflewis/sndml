@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc name="scripts" title="Scripts">
+<h2>Introduction</h2>
+<p>Scripts should be stored in a text file with a <code>.txt</code> extension.
+Each command in the script file must be on a single line
+unless a backslash ("\") is used as a line continuation character.
+A "#" is used to indicate the start of a comment.</p>
+
+<p>Use the following command line option
+to execute a script file.</p>
+<syntax><more><kw>-f</kw><var>filename</var></more></syntax>
+
+<h3>Notation</h3>
+<p>The following notation is used in the syntax specifications below.</p>
+<notation>
+  <notationsyntax><optional><kw>created</kw><or/><kw>updated</kw></optional></notationsyntax>
+  <definition>Optional choice.  Either or neither of the keyworks may be specified.</definition>
+</notation>
+<notation>
+  <notationsyntax><mandatory><kw>output</kw><or/><kw>append</kw></mandatory></notationsyntax>
+  <definition>Mandatory choice.  One of the keywords must be specified.</definition>
+</notation>
+<notation>
+  <notationsyntax><curly><var>clause</var></curly></notationsyntax>
+  <definition>The clause is specified between curly braces.</definition>
+</notation>
+<p><b>Note:</b>  All keywords are lower case.</p>
+
+<h2>DateTime Notation</h2>
+<p>Dates must be specified using the format <i>yyyy-mm-dd</i> or <i>yyyy-mm-dd hh:mm:ss</i>.  
+If no time is specified then <b>00:00:00</b> (midnight) is assumed. All dates are in GMT.</p>
+
+<p>Starting dates are inclusive.  Ending dates are exclusive.  
+The following range includes all dates in December 2012
+from midnight GMT on December 1 through 12:59:59 PM GMT on December 31. 
+</p>
+<example>from 2012-12-01 to 2013-01-01</example>
+
+<p>Two special dates are permitted. 
+The keyword <name>now</name> is used to indicate the current date/time.
+The keywork <name>today</name> is used to indicated the
+start of the current date in GMT.</p>
+
+<p>In addition, a <name>minus</name> or/or <name>plus</name> clause can be appended to a datetime.
+The syntax is as follows:</p>
+
+<syntax>
+<more><var>datetime</var>
+<optional><kw>minus</kw> <var>n</var> 
+<mandatory><kw>days</kw><or/><kw>hours</kw><or/><kw>minutes</kw><or/><kw>seconds</kw></mandatory></optional>
+<optional><kw>plus</kw><var>n</var>
+<mandatory><kw>days</kw><or/><kw>hours</kw><or/><kw>minutes</kw><or/><kw>seconds</kw></mandatory></optional></more>
+</syntax>
+
+<p>For a time span of the past 60 minutes specify</p>  
+<example>from now minus 1 hours to now</example>
+
+<p>For a time span of the past week ending at 5:00 AM GMT specify</p>
+<example>from today minus 7 days plus 5 hours to today plus 5 hours</example>
+
+<h2>load</h2>
+<p>The <name>load</name> command is used to load data 
+from a ServiceNow table (source table) into an SQL table (destination table).</p>
+<p>The name of the destination table is the same as the name of the
+source table (unless the <name>into</name> clause is specified). 
+If the destination table does not exist then it will be created 
+based on schema information retrieved from ServiceNow.</p>
+
+<h3>Syntax</h3>
+<syntax>
+<first><kw>load</kw><var>tablename</var>
+<optional><kw>into</kw><var>sqltablename</var></optional>
+<optional><kw>truncate</kw></optional></first>
+<more><optional><kw>insert-only</kw><or/><kw>update-insert</kw><or/><kw>compare-timestamps</kw></optional></more>
+<more><optional><optional><kw>created</kw><or/><kw>updated</kw></optional><kw>from</kw><var>datetime</var><optional><kw>to</kw><var>datetime</var></optional></optional></more>
+<more><optional><kw>where</kw><curly><var>encodedquery</var></curly></optional></more>
+</syntax>
+<h3>into</h3>
+<p>Used to specify an alternate name for the destination table.
+By default the destination table has the same name as the source table.
+If the destination table does not exist then it will be created
+based on schema information extracted from ServiceNow.</p>
+
+<h3>truncate</h3>
+<p>This option causes the destination table to be truncated before starting the load process.</p>
+
+<h3>insert-only</h3>
+<p>This load method performs inserts only.
+If any record already exists in the destination table then  
+a primary key violation will be thrown.
+This options should only be used if it is known that the records do <b>not</b> exist
+in the destination table.  
+This method is the default if <name>truncate</name> is specified.
+</p>
+
+<h3>update-insert</h3>
+<p>This is the default load method unless <name>truncate</name> is specified.
+First an attempt will be made to update the record in the destination table.
+If the record is not found then it will be inserted.</p>
+
+<h3>compare-timestamps</h3>
+<p>This load method causes the destination table to be read before an insert or update
+is attempted.  If the record is found in the destination table then the 
+timestamps (<name>sys_updated_on</name>) are compared.  
+The destination record is updated only if the source record is more recent.
+If the record is not found in the destination table, it is inserted.</p>
+  
+<h3>from and to dates</h3>
+<p>Allows specification of a record creation date range (based on <name>sys_created_on</name>)
+or update date range (based on <name>sys_updated_on</name>).
+The default is to use a creation date range.
+If a <name>from</name> date is specified then it is inclusive (not exclusive).
+In other words, records created on or after the <name>from</name> date will be included.
+If a <name>to</name> date is specified then it is exclusive (not inclusive).
+In other words, only records created before the <name>to</name> date will be included.</p>
+
+<p>Dates must be specified using the format <i>yyyy-mm-dd</i> or <i>yyyy-mm-dd hh:mm:ss</i>.  
+If no time is specified then <b>00:00:00</b> (midnight) is assumed. All dates are in GMT.</p>
+
+<p>For additional details refer to <b>DateTime Notation</b> above.</p>
+
+<h3>where</h3>
+<p>
+Allows specification of an encoded query used to restrict the records process.
+The encoded query is applied <b>in addition to</b> any date range specified.
+The encoded query must appear inside curly braces.</p>
+
+<h3>Examples</h3>
+<p>The following command will load all Linux servers into a SQL table named
+<name>linux_server</name>.
+The SQL table will be created if it does not already exist.
+If it exists and contains data then records from ServiceNow
+will be inserted and/or updated based on the primary key which is 
+<name>sys_id</name>.</p>
+
+<example>
+load cmdb_ci_linux_server into linux_server
+</example>
+
+<p>The following script will load all <name>change_request</name> tickets
+from the first half of 2012, one month at a time starting with the most recent month.</p>
+<example>
+load change_request from 2012-06-01 to 2012-07-01
+load change_request from 2012-05-01 to 2012-06-01
+load change_request from 2012-04-01 to 2012-05-01
+load change_request from 2012-03-01 to 2012-04-01
+load change_request from 2012-02-01 to 2012-03-01
+load change_request from 2012-01-01 to 2012-02-01
+</example>
+
+<p>The following script will load all records from the tables
+<name>sys_user</name>,
+<name>sys_user_group</name> and
+<name>sys_user_grmember</name>.
+Existing records in  
+<name>sys_user</name> and <name>sys_user_group</name>
+will be updated only if they have changed (based on timestamp).
+The table <name>sys_user_grmember</name> 
+will be truncated and reloaded.</p>
+
+<example>
+load sys_user compare-timestamps
+load sys_user_group compare-timestamps
+load sys_user_grmember truncate
+</example>
+
+<p>The following command will load all P1 "Network" incidents 
+updated in the last seven days through midnight GMT.</p>
+
+<example>
+load incident into p1_network_incident from today minus 7 days to today \
+  where { priority&lt;2^category=network } 
+</example>
+
+<h2>refresh</h2>
+<p>This command loads records that have been updated or inserted (based on <name>sys_updated_on</name>)
+since a specified date.
+</p>
+
+<h3>Syntax</h3>
+<syntax>
+<first><kw>refresh</kw><var>tablename</var><optional><kw>into</kw><var>sqltablename</var></optional></first>
+<more><kw>since</kw><var>datetime</var></more>
+<more><optional><kw>where</kw><curly><var>encodedquery</var></curly></optional></more>
+</syntax>
+
+<h3>Example</h3>
+<p>Note that this <name>refresh</name> command:</p>
+<example>refresh change_request since today</example>
+<p>performs exactly the same function as this <name>load</name> command:</p>
+<example>load change_request updated from today to now</example> 
+
+<h2>refresh every</h2>
+<p>This command polls the ServiceNow instance
+periodically looking for updated or inserted records.
+The command may be preceded by one or more 
+<name>load</name> commands.
+This command will cause the application to continue running indefinitely
+until it is killed or cancelled.
+</p>
+
+<p>It is also possible to have multiple <name>refresh every</name> commands
+in single script file and for them to have different frequencies.
+However, the application is single threaded and it will not 
+perform multiple concurrent queries against the ServiceNow instance.</p>
+
+<h3>Syntax</h3>
+<syntax>
+<first><kw>refresh</kw><var>tablename</var><optional><kw>into</kw><var>sqltablename</var></optional></first>
+<more><optional><kw>since</kw><var>datetime</var></optional></more>
+<more><kw>every</kw><var>n</var><mandatory><kw>seconds</kw><or/><kw>minutes</kw><or/><kw>hours</kw></mandatory></more>
+<more><optional><kw>where</kw><curly><var>encodedquery</var></curly></optional></more>
+</syntax>
+  
+<h3>into</h3>
+<p>Used to specify an alternate name for the destination table.
+By default the destination table has the same name as the source table.
+If the destination table does not exist then it will be created
+based on schema information extracted from ServiceNow.</p>
+
+<h3>every</h3>
+<p>Used to specify the frequency with which the application will poll the ServiceNow instance
+to check for updated and/or inserted records.</p>
+
+<h3>since</h3>
+<p>Used to specify a starting date/time for the initial query.
+The <i>datetime</i> may specified using the format <i>yyyy-mm-dd hh:mm:ss</i>
+or using the keyword <name>today</name> or <name>now</name>.  
+All dates must be specified in GMT.
+The keyword <name>today</name> will be interpreted as midnight GMT.</p>
+
+<h3>where</h3>
+<p>An encoded query string used to restrict the records retrieved.</p>
+
+<h3>Examples</h3>
+<p>The following example will load all P1 incidents created or updated since 5:30 PM (GMT) yesterday
+and then poll the system every 5 minutes for any newly created or updated P1 incidents.
+The application will continue running until it is killed.
+</p> 
+<example>
+load incident from today minus 390 minutes where { priority&lt;2 }
+refresh incident every 5 minutes where { priority&lt;2 }
+</example>
+
+<p>The following example will load all upcoming change requests and change tasks
+into the the tables <name>upcoming_change_request</name> and <name>upcoming_change_task</name>
+respectively and then monitor the system every 10 minutes for any changes.
+The application will continue running until it is killed.
+This script will not correctly account for change requests or change tasks
+which are deleted after it starts running.  For that you need the 
+<name>prune</name> operation (described below).
+</p>
+
+<example>
+load    change_request into upcoming_change_request truncate \
+                       where { start_date>javascript:gs.daysAgoEnd(0) }
+load    change_task    into upcoming_change_task    truncate \
+                       where { request.start_date>javascript:gs.daysAgoEnd(0) }
+refresh change_request into upcoming_change_request every 10 minutes \
+                       where { start_date>javascript:gs.daysAgoEnd(0) }
+refresh change_task    into upcoming_change_task    every 10 minutes \
+                       where { request.start_date>javascript:gs.daysAgoEnd(0) }
+</example>
+
+<h2>prune</h2>
+<p>The <name>prune</name> command scans <name>sys_audit_delete</name>
+to identify records which need to be deleted in the destination table.
+</p>
+<h3>Syntax</h3>
+<syntax>
+<first><kw>prune</kw><var>tablename</var>
+<optional><kw>into</kw><var>sqltablename</var></optional>
+<kw>since</kw><var>datetime</var></first>
+</syntax>
+
+<h3>Examples</h3>
+<example>prune change_task into upcoming_change_task since 2013-01-01</example>
+
+<h2>prune every</h2>
+<p>The <name>prune every</name> command polls <name>sys_audit_delete</name>
+periodically to identify records which need to be deleted in the destination table.
+</p>
+<h3>Syntax</h3>
+<syntax>
+<first><kw>prune</kw><var>tablename</var>
+<optional><kw>into</kw><var>sqltablename</var></optional></first>
+<more><optional><kw>since</kw><var>datetime</var></optional></more>
+<more><kw>every</kw><var>n</var><mandatory><kw>seconds</kw><or/><kw>minutes</kw><or/><kw>hours</kw></mandatory></more>
+</syntax>
+
+<h3>Examples</h3>
+<example>prune change_task into upcoming_change_task every 60 minutes</example>
+
+<h2>sql</h2>
+<p>The <name>sql</name> command is a pass-through to the database.
+The application executes the command using an <name>executeImmediate</name>
+followed by a <name>commit</name>.
+The command to be executed must be enclosed in curly braces.
+</p>
+
+<h3>Syntax</h3>
+<syntax>
+<first>sql<curly><var>statement</var></curly></first>
+</syntax>
+
+<h3>Examples</h3>
+<example>sql { truncate table ritm_variable }</example>
+
+<example>
+sql { merge into ritm_variable t \
+using ( \
+  select \
+    v.sys_id sc_item_option, \
+    ritm.sys_id sc_req_item, \
+    ritm.number_, \
+    vdef.name var_name, \
+    v.value var_value, \
+    vdef.reference ref_table, \
+    vdef.question_text question_text \
+  from  \
+    sc_req_item ritm,  \
+    sc_cat_item item, \
+    sc_item_option_mtom iv,  \
+    sc_item_option v, \
+    item_option_new vdef \
+  where ritm.opened_at >= to_date('2012-07-01','yyyy-mm-dd') \
+    and item.sys_id = ritm.cat_item \
+    and iv.request_item = ritm.sys_id \
+    and v.sys_id = iv.sc_item_option \
+    and vdef.sys_id = v.item_option_new \
+  ) s \
+on (s.sc_item_option = t.sc_item_option) \
+when matched then update \
+  set t.var_value = s.var_value \
+when not matched then insert ( \
+  t.sc_item_option, t.sc_req_item, t.number_, \
+  t.var_name, t.var_value, t.ref_table, t.question_text) \
+values ( \
+  s.sc_item_option, s.sc_req_item, s.number_, \
+  s.var_name, s.var_value, s.ref_table, s.question_text) } 
+</example>
+</doc>

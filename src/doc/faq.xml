@@ -1,0 +1,51 @@
+<doc name="faq" title="FAQ">
+<h2>Frequently Asked Questions</h2>
+<qatable>
+<qa>
+  <q>Can the DataPump be used to update SeviceNow from a SQL database?</q>
+  <a>No. The DataPump only updates SQL from ServiceNow.</a>
+</qa>
+<qa>
+  <q>Why not modify the DataPump so that it can move data in either direction?</q>
+  <a>Updating ServiceNow from an SQL database is a completely different problem,
+  and there are other, better solutions.
+  The DataPump creates tables in the SQL database, so it knows
+  that the column names will match and the primary key will always be 
+  <name>sys_id</name>.
+  If the starting point is SQL, it will be necessary to identify a field map
+  and a key on which to coalesce.  The recommended solution is to use
+  a ServiceNow Transform Map with a JDBC Data Source.
+  </a>
+</qa>
+<qa>
+  <q>What is the <name>-cancel</name> option and how does it work?</q>
+  <a>If a <b>signal file</b> is defined in the
+  <page name="configuration" sect="properties"/> file,
+  then the DataPump will check for existence of this file after every SOAP call,
+  or once per second while it is sleeping.  If the file is detected,
+  the application will generate an internal <name>InterruptedException</name>.
+  This provides a clean mechanism to shut down the application if it is 
+  in the middle of long-running job set.  The <name>-cancel</name> 
+  command link option simply creates the signal file and terminates,
+  allowing for any other running instance of the application to detect
+  that the file has been created.  
+  </a>
+</qa>
+<qa>
+  <q>If I add a field to a ServiceNow table, will the DataPump add this field
+  to the SQL table next time it is run?</q>
+  <a>No.  The DataPump only generates DDL if a table does not already exist
+  in the target database.  If you add a field to a ServiceNow table,
+  then you must manually add a field with the same name to the SQL table.
+  Once the field has been added, the DataPump will update it.</a>
+</qa>
+<qa>
+  <q>The DataPump seems to replicate all fields in the table.  What if I do not
+  want all the fields to be replicated?</q>
+  <a>Simply drop the field from the SQL table.  
+  As part of its start-up process, the DataPump compares the field names
+  between the source and the target tables.  It only replicates those
+  fields where it finds a match.</a>
+</qa>
+</qatable>
+</doc>
