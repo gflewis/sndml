@@ -29,7 +29,6 @@ abstract class JobModel {
 	protected String jobName;
 	protected LoadMethod method;
 	protected SuiteModel suite;
-	// protected JobController controller;
 	
 	protected boolean displayValues = false;
 	protected String sortField = null;
@@ -53,7 +52,6 @@ abstract class JobModel {
     	this.suite = suite;
     }
     
-    // JobController getController() { return this.controller; }
     boolean isPersistent() { return (this instanceof PersistentJob); }
     boolean isTruncate() { return this.truncate; }
 	boolean getUseCreatedDate() { return this.useCreatedDate; }	

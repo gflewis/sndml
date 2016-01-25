@@ -35,13 +35,13 @@ public class PersistentJob extends JobModel {
     	super(suite);
     	assert suite != null;
     	assert jobrec != null;
-		assert jobrec.getTable().getName().equals("u_datapump_job");
+		assert jobrec.getTable().getName().equals(myTableName());
     	this.jobkey = jobrec.getKey();
     	this.jobtable = jobrec.getTable();
-		jobName = jobrec.getField("u_name");
+		jobName = jobrec.getField(fieldName("name"));
     	logger = LoggerFactory.getLogger(PersistentJob.class, jobName);
-		String tableName = jobrec.getField("u_table");
-		String operationName = jobrec.getField("u_operation");
+		String tableName = jobrec.getField(fieldName("table"));
+		String operationName = jobrec.getField(fieldName("operation"));
 		if (operationName.equals("sql")) {
 			this.operation = JobOperation.SQL;
 			this.method = null;
@@ -57,9 +57,9 @@ public class PersistentJob extends JobModel {
 			}
 	    	if (operationName.equals("load")) {
 	    		this.operation = JobOperation.LOAD;
-	        	this.truncate = jobrec.getBoolean("u_truncate");
-	        	this.partitionField = jobrec.getField("u_partition_field");
-	        	this.partitionValue = jobrec.getField("u_partition_value");
+	        	this.truncate = jobrec.getBoolean(fieldName("truncate"));
+	        	// this.partitionField = jobrec.getField("u_partition_field");
+	        	// this.partitionValue = jobrec.getField("u_partition_value");
 	    		String intervalField = jobrec.getField("u_interval_field");
 	    		if (intervalField == null) {
 	        		this.sortField = "sys_created_on";

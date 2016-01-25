@@ -84,7 +84,7 @@ public class PersistentSuite extends SuiteModel {
 		RecordList jobRecList = readAllJobs();
     	List<JobModel> joblist = new ArrayList<JobModel>(jobRecList.size());
 		for (Record jobRec : jobRecList) {
-			String jobName = jobRec.getField("u_name");
+			String jobName = jobRec.getField(PersistentJob.fieldName("name"));
 			Key jobKey = jobRec.getKey();
 			logger.debug("addJob " + jobName + " " + jobKey);
 			JobModel job = new PersistentJob(this, jobRec);
@@ -123,7 +123,7 @@ public class PersistentSuite extends SuiteModel {
 		try {
 			RecordList jobRecList = readAllJobs();
 			for (Record jobRec : jobRecList) {
-				String jobName = jobRec.getField("u_name");
+				String jobName = jobRec.getField(PersistentJob.fieldName("name"));
 				logger.debug("refresh " + jobName);
 				PersistentJob job = findJob(jobRec);
 				assert job != null;
@@ -141,8 +141,8 @@ public class PersistentSuite extends SuiteModel {
 	 */
 	int countJobs() throws SuiteModelException {
 		QueryFilter filter = new QueryFilter();
-		filter.addFilter("u_jobset", QueryFilter.EQUALS, key.toString());
-		filter.addFilter("u_inactive", QueryFilter.EQUALS, "false");
+		filter.addFilter(PersistentJob.fieldName("suite"), QueryFilter.EQUALS, key.toString());
+		filter.addFilter(PersistentJob.fieldName("active"), QueryFilter.EQUALS, "true");
 		try {
 			return jobTable.getCount(filter);
 		} catch (SoapResponseException e) {
