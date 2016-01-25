@@ -17,7 +17,6 @@ import servicenow.common.datamart.SuiteController;
 import servicenow.common.datamart.SuiteInitException;
 import servicenow.common.datamart.SuiteModel;
 import servicenow.common.datamart.SuiteModelException;
-
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.FieldValues;
 import servicenow.common.soap.InvalidDateTimeException;
@@ -37,21 +36,25 @@ public class PersistentSuite extends SuiteModel {
 
 	protected Table suiteTable;
 	protected Table jobTable;
-		
+
+	static PersistentConfigMap names = new PersistentConfigMap();
+	
 	PersistentSuite(Session session, Record rec) 
     		throws IOException, JDOMException, SQLException {
 		
 		super(session);
 		assert rec != null;
+		
 		this.rec = rec;
 		this.key = rec.getKey();		
-		this.status = Status.valueOf(rec.getField("u_status").toUpperCase());
+		this.status = Status.valueOf(
+			rec.getField(fieldName("status")).toUpperCase());
 
-		suiteTable = session.table("u_datapump_jobset");
-		jobTable   = session.table("u_datapump_job");
-		assert rec.getTable().getName().equals("u_datapump_jobset");
+		suiteTable = session.table(myTableName());
+		jobTable   = session.table(PersistentJob.myTableName());
+		assert rec.getTable().getName().equals(("suite.table"));
 		
-		String suiteName = rec.getField("u_name");
+		String suiteName = rec.getField(fieldName("name"));
     	logger = LoggerFactory.getLogger(PersistentSuite.class, suiteName);
 
     	updateFromRec();
@@ -59,7 +62,15 @@ public class PersistentSuite extends SuiteModel {
 		
 		controller = new SuiteController(this);		
 	}	
-		
+
+	static String myTableName() {
+		return names.getName("suite.table");
+	}
+	
+	static String fieldName(String name) {
+		return names.getName("suite.field." + name);
+	}
+	
 	/**
 	 * Load the list of jobs from ServiceNow.
 	 * This function is only valid if the suite is persistent.
@@ -90,9 +101,10 @@ public class PersistentSuite extends SuiteModel {
 		RecordList jobRecList;
 		try {
 			QueryFilter filter = new QueryFilter();
-			filter.addFilter("u_jobset", QueryFilter.EQUALS, key.toString());
-			filter.addFilter("u_inactive", QueryFilter.EQUALS, "false");
-			TableReader jobReader = jobTable.petitReader(filter).sortAscending("u_order");		
+			filter.addFilter(PersistentJob.fieldName("suite"), QueryFilter.EQUALS, key.toString());
+			filter.addFilter(PersistentJob.fieldName("active"), QueryFilter.EQUALS, "true");
+			TableReader jobReader = jobTable.petitReader(filter);
+			jobReader.sortAscending(PersistentJob.fieldName("order"));		
 			jobRecList = jobReader.getAllRecords();
 		}
 		catch (IOException e) {
@@ -154,7 +166,7 @@ public class PersistentSuite extends SuiteModel {
 	}	
 
 	String getName() {
-		String name = rec.getField("u_name");
+		String name = rec.getField(fieldName("name"));
 		assert name != null && name.length() > 0;
 		return name;
 	}
@@ -166,7 +178,7 @@ public class PersistentSuite extends SuiteModel {
 		try {
 			loadJobs();
 			FieldValues values = new FieldValues();
-			values.set("u_status", "running");
+			values.set(fieldName("status"), "running");
 			suiteTable.update(key, values);
 			rec = suiteTable.get(key);
 			// runStart and nextRunStart will be calculated by business rule			
@@ -186,7 +198,7 @@ public class PersistentSuite extends SuiteModel {
 		logger.debug("setStatus " + newstatus);
 		this.status = newstatus;
 		FieldValues values = new FieldValues();
-		values.set("u_status", newstatus.toString().toLowerCase());
+		values.set(fieldName("status"), newstatus.toString().toLowerCase());
 		try {
 			suiteTable.update(key, values);
 		}
@@ -195,13 +207,16 @@ public class PersistentSuite extends SuiteModel {
 		}
 		refreshJobs();
 	}
-
 	
-	void updateFromRec() throws InvalidDateTimeException {
-		status = Status.valueOf(rec.getField("u_status").toUpperCase());
-		runStart = rec.getDateTime("u_run_start");
-		nextRunStart = rec.getDateTime("u_next_run_start");	
-	    frequency = rec.getDuration("u_frequency");
+	void updateFromRec() throws InvalidDateTimeException, SoapResponseException {
+		status = Status.valueOf(rec.getField(fieldName("status")).toUpperCase());
+		runStart = rec.getDateTime(fieldName("run_start"));
+		nextRunStart = rec.getDateTime(fieldName("next_run_start"));
+		boolean polling = rec.getBoolean(fieldName("polling"));
+		if (polling)
+			frequency = rec.getDuration(fieldName("frequency"));
+		else
+			frequency = null;
 	}
 	
 	/**
@@ -216,12 +231,12 @@ public class PersistentSuite extends SuiteModel {
 		}
 		return null;
 	}
-
+	
 	static Record getSuiteRecord(Session session, String name) 
 			throws IOException, JDOMException {
-		Table suiteTable = session.table("u_datapump_jobset");
+		Table suiteTable = session.table(myTableName());
 		assert suiteTable != null;
-		Record rec = suiteTable.get("u_name", name);
+		Record rec = suiteTable.get(fieldName("name"), name);
 		Logger logger = LoggerFactory.getLogger(PersistentSuite.class); 
 		if (rec == null)
 			logger.debug("getSuiteRecord " + name + " is null");

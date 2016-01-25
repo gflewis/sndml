@@ -1,7 +1,6 @@
 package servicenow.common.datamart;
 
 import java.io.IOException;
-
 import org.jdom2.JDOMException;
 
 import servicenow.common.datamart.JobModel;
@@ -15,7 +14,6 @@ import servicenow.common.datamart.SuiteInitException;
 import servicenow.common.datamart.SuiteModel;
 import servicenow.common.datamart.SuiteModelException;
 import servicenow.common.datamart.SuiteParseException;
-
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.FieldValues;
 import servicenow.common.soap.InvalidTableNameException;
@@ -29,7 +27,9 @@ public class PersistentJob extends JobModel {
 
 	protected final Key jobkey; 
 	protected final Table jobtable; 
-		
+
+	static PersistentConfigMap names = new PersistentConfigMap();
+
     PersistentJob(SuiteModel suite, Record jobrec) 
     		throws IOException,	InvalidTableNameException, SuiteInitException {
     	super(suite);
@@ -111,6 +111,14 @@ public class PersistentJob extends JobModel {
 
 	Key getKey() { return this.jobkey; }
 
+	static String myTableName() {
+		return names.getName("job.table");
+	}
+	
+	static String fieldName(String name) {
+		return names.getName("job.field." + name);
+	}
+	
     /**
      * Set the status to Running, and advance the interval.
      */
