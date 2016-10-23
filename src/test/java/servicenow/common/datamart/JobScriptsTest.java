@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
-import org.junit.*;
 
 import servicenow.common.datamart.JobModel;
 import servicenow.common.datamart.LoadMethod;
@@ -13,6 +12,8 @@ import servicenow.common.datamart.Status;
 import servicenow.common.datamart.SuiteModel;
 import servicenow.common.datamart.SuiteParseException;
 import servicenow.common.soap.DateTime;
+
+import org.junit.*;
 
 public class JobScriptsTest {
 

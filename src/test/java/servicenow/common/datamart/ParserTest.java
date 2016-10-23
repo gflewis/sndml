@@ -5,12 +5,13 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
-import org.junit.After;
-import org.junit.Test;
 
 import servicenow.common.datamart.CommandBuffer;
 import servicenow.common.datamart.SuiteParseException;
 import servicenow.common.soap.DateTime;
+
+import org.junit.After;
+import org.junit.Test;
 
 public class ParserTest {
 

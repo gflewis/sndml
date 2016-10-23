@@ -9,9 +9,10 @@ import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
-import org.junit.*;
 
 import servicenow.common.datamart.Loader;
+
+import org.junit.*;
 
 
 public class LoaderOptionsTest {

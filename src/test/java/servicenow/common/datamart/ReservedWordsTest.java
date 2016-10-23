@@ -5,12 +5,13 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import servicenow.common.datamart.LoadLimitExceededException;
 import servicenow.common.datamart.Loader;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test loading a table with column names that are reserved words.

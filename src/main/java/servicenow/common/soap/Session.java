@@ -9,7 +9,6 @@ import java.util.*;
 import org.apache.commons.codec.binary.Base64;
 import org.jdom2.JDOMException;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 
 import servicenow.common.soap.CookieJar;
 import servicenow.common.soap.InsufficientRightsException;
@@ -23,6 +22,8 @@ import servicenow.common.soap.SessionConfiguration;
 import servicenow.common.soap.SessionMetrics;
 import servicenow.common.soap.Table;
 import servicenow.common.soap.TableSchema;
+
+import org.slf4j.Logger;
 
 /**
  * This is the main class in the package.  It holds three things:
@@ -51,6 +52,8 @@ public class Session {
 	private final CookieJar cookiejar;
 	private final Record userProfile;
 	final boolean validate;
+	final boolean aggregates; // true if aggregate WS plugin is installed
+	// final boolean unqualified_element_form_default;
 	// final Table hierarchy; // sys_db_object
 	private Table sys_dictionary;
 	private Table sys_properties;
@@ -107,6 +110,11 @@ public class Session {
 			throw new IllegalArgumentException("URL not specified");
 		if (username == null) 
 			throw new IllegalArgumentException("username not specified");
+		this.aggregates = 
+			config.getBoolean("check_count", 
+				config.getBoolean("aggregates", false));
+		// this.unqualified_element_form_default = 
+		//    config.getBoolean("unqualified_element_form_default", true);
 		this.cookiejar = new CookieJar();
 		this.baseurl = (url.endsWith("/") ? url : url + "/");
 		this.username = username;
@@ -114,6 +122,7 @@ public class Session {
 		authorization = Base64.encodeBase64String(userpassword.getBytes());		
 		this.validate = validate;
 		logger.info("url=" + baseurl + " username=" + username);
+		logger.info("validate=" + validate + " aggregates=" + aggregates);
 		if (!validate) logger.info("schema will not be loaded since validation disabled");
 		// The following statement will throw InsufficientRightsException
 		// if password is bad or if unable to read sys_user

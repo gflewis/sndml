@@ -12,7 +12,6 @@ import servicenow.common.datamart.JobOperation;
 import servicenow.common.datamart.LoggerFactory;
 import servicenow.common.datamart.PersistentJob;
 import servicenow.common.datamart.PersistentSuite;
-
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.FieldValues;
 import servicenow.common.soap.Key;

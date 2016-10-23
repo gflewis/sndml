@@ -451,7 +451,8 @@ where [sys_id] = $keyvalue</update>
     </templates>
     <datatypes>
       <!-- Character types -->
-      <typemap glidetype="string"          >VARCHAR(#)</typemap>      
+      <typemap glidetype="string" maxsize="3999">VARCHAR(#)</typemap>
+      <typemap glidetype="string" minsize="4000">VARCHAR(4000)</typemap>
       <!-- Numeric types -->
       <typemap glidetype="boolean"         >TINYINT</typemap>
       <typemap glidetype="integer"         >INT</typemap>
@@ -475,7 +476,8 @@ where [sys_id] = $keyvalue</update>
       <typemap glidetype="glide_duration"  >INT</typemap>
       <typemap glidetype="timer"           >INT</typemap>
       <!-- Wildcard templates must appear last -->
-      <typemap glidetype="*">VARCHAR(#)</typemap>      
+      <typemap glidetype="*" maxsize="3999">VARCHAR(#)</typemap>
+      <typemap glidetype="*" minsize="4000">VARCHAR(4000)</typemap>
     </datatypes>
     <fieldnames/>
   </sql>  

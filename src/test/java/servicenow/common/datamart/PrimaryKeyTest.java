@@ -23,8 +23,9 @@ public class PrimaryKeyTest {
 	@Test (expected = SuiteExecException.class)
 	public void test() throws Exception {
 		log.info("PrimaryKeyTest");
+		String c = AllTests.junitProperty("some_group_name").substring(0, 1);
 		String[] jobs =	{
-			"load sys_user_group truncate where {active=true^nameSTARTSWITHB}",
+			"load sys_user_group truncate where {active=true^nameSTARTSWITH" + c + "}",
 			"load sys_user_group insert-only order-by name "};
 		SuiteModel suite = AllTests.newSuite(jobs);
 		suite.getController().runOnce();

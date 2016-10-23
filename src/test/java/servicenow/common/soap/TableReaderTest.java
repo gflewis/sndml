@@ -3,8 +3,6 @@ package servicenow.common.soap;
 import static org.junit.Assert.*;
 
 import org.slf4j.Logger;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.KeyList;
@@ -13,6 +11,9 @@ import servicenow.common.soap.RecordList;
 import servicenow.common.soap.Session;
 import servicenow.common.soap.Table;
 import servicenow.common.soap.TableReader;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class TableReaderTest {
 

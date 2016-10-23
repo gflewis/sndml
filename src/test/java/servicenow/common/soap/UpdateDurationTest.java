@@ -3,6 +3,7 @@ package servicenow.common.soap;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.junit.Ignore;
 import org.slf4j.Logger;
 
 import servicenow.common.soap.FieldValues;
@@ -15,7 +16,7 @@ public class UpdateDurationTest {
 
 	Logger logger = AllTests.junitLogger(UpdateDurationTest.class);
 	
-	@Test
+	@Ignore @Test
 	public void testUpdateDuration() throws Exception {
 		String tablename = "u_datapump_job";
 		String fieldname = "u_frequency";

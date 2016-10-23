@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import servicenow.common.datamart.DatamartConfiguration;
 import servicenow.common.datamart.LoggerFactory;
 import servicenow.common.datamart.ResourceException;
-
 import servicenow.common.soap.SessionConfiguration;
 
 public class DatamartConfiguration extends BaseConfiguration {

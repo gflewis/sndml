@@ -9,11 +9,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.slf4j.Logger;
+
+import servicenow.common.datamart.DatabaseWriter;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import servicenow.common.datamart.DatabaseWriter;
 
 public class DB {
 

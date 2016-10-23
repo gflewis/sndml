@@ -4,12 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.*;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
-
 import org.slf4j.Logger;
 
+import servicenow.common.datamart.DatabaseWriter;
 import servicenow.common.datamart.DatamartConfiguration;
 import servicenow.common.datamart.SqlGenerator;
 import servicenow.common.soap.Session;
@@ -30,9 +29,8 @@ public class SqlGeneratorTest {
 	@Test
 	public void testUppercaseName() throws Exception {
 		DatamartConfiguration config = AllTests.getConfiguration();
-		Connection connection = DB.getConnection();
 		config.setProperty("dialect", "oracle2");
-		SqlGenerator generator = new SqlGenerator(config, connection);
+		SqlGenerator generator = new SqlGenerator(config, AllTests.getDBWriter());
 		String sqlname = generator.sqlName("user");
 		assertEquals("USER_", sqlname);		
 	}
@@ -40,9 +38,8 @@ public class SqlGeneratorTest {
 	@Test
 	public void testQuotedName() throws Exception {
 		DatamartConfiguration config = AllTests.getConfiguration();
-		Connection connection = DB.getConnection();
 		config.setProperty("dialect", "oracle");
-		SqlGenerator generator = new SqlGenerator(config, connection);
+		SqlGenerator generator = new SqlGenerator(config, AllTests.getDBWriter());
 		String sqlname = generator.sqlName("user");
 		assertEquals("\"USER\"", sqlname);		
 	}
@@ -50,9 +47,9 @@ public class SqlGeneratorTest {
 	@Test
 	public void testSchema() throws Exception {
 		DatamartConfiguration config = AllTests.getConfiguration();
-		Connection connection = DB.getConnection();
 		config.setProperty("schema", "xxxx");
-		SqlGenerator generator = new SqlGenerator(config, connection);
+		DatabaseWriter database = new DatabaseWriter(config);
+		SqlGenerator generator = new SqlGenerator(config, database);
 		HashMap<String,String> map = new HashMap<String,String>();
 		map.put("fieldmap", "name=?");
 		map.put("keyvalue", "?");
@@ -64,9 +61,9 @@ public class SqlGeneratorTest {
 	@Test
 	public void testNullSchema() throws Exception {
 		DatamartConfiguration config = AllTests.getConfiguration();
-		Connection connection = DB.getConnection();
 		config.setProperty("schema", "");
-		SqlGenerator generator = new SqlGenerator(config, connection);
+		DatabaseWriter database = new DatabaseWriter(config);
+		SqlGenerator generator = new SqlGenerator(config, database);
 		HashMap<String,String> map = new HashMap<String,String>();
 		map.put("fieldmap", "name=?");
 		map.put("keyvalue", "?");
@@ -79,9 +76,9 @@ public class SqlGeneratorTest {
 	public void testCreateTable() throws Exception {
 		DatamartConfiguration config = AllTests.getConfiguration();
 		final String tablename = "incident";
-		Connection connection = DB.getConnection();
 		config.setProperty("autocreate", "false");
-		SqlGenerator generator = new SqlGenerator(config, connection);
+		DatabaseWriter database = new DatabaseWriter(config);
+		SqlGenerator generator = new SqlGenerator(config, database);
 		Session session = AllTests.getSession();
 		assertNotNull(session);
 		Table table = session.table(tablename);

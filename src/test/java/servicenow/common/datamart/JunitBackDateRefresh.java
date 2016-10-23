@@ -1,5 +1,13 @@
 package servicenow.common.datamart;
 
+import static org.junit.Assert.*;
+
+import org.junit.*;
+
+import java.io.IOException;
+
+import org.slf4j.Logger;
+
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.FieldValues;
 import servicenow.common.soap.QueryFilter;
@@ -8,14 +16,6 @@ import servicenow.common.soap.RecordList;
 import servicenow.common.soap.Session;
 import servicenow.common.soap.Table;
 import servicenow.common.soap.TableReader;
-
-import static org.junit.Assert.*;
-
-import org.junit.*;
-
-import java.io.IOException;
-
-import org.slf4j.Logger;
 
 // import servicenow.common.soap.*;
 

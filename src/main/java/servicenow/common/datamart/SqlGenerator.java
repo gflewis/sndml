@@ -7,10 +7,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
 
 import servicenow.common.datamart.DatabaseWriter;
 import servicenow.common.datamart.DatamartConfiguration;
@@ -20,11 +16,15 @@ import servicenow.common.datamart.ResourceException;
 import servicenow.common.datamart.ResourceManager;
 import servicenow.common.datamart.SqlGenerator;
 import servicenow.common.datamart.SuiteInitException;
-
 import servicenow.common.soap.FieldDefinition;
 import servicenow.common.soap.Table;
 import servicenow.common.soap.TableSchema;
 import servicenow.common.soap.TableWSDL;
+
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 /**
  * Generates SQL statements using templates from the <b>sqltemplates.xml</b> file.
@@ -40,18 +40,12 @@ public class SqlGenerator {
 	private Element tree;
 	private final String namecase;
 	private final String namequotes;
-	private final String user;
 	private final String schema;
 	NameMap namemap = new NameMap();
 		
-	public SqlGenerator(DatamartConfiguration config, DatabaseWriter writer) 
+	public SqlGenerator(DatamartConfiguration config, DatabaseWriter database)  
 			throws ResourceException, SQLException {
-		this(config, writer.getConnection());
-	}
-	
-	public SqlGenerator(DatamartConfiguration config, Connection connection)  
-			throws ResourceException, SQLException {
-		InputStream sqlConfigStream;		
+		InputStream sqlConfigStream;
 		sqlConfigStream = 
 			ClassLoader.getSystemResourceAsStream(
 				config.getString("templates",  "sqltemplates.xml"));
@@ -65,10 +59,10 @@ public class SqlGenerator {
 		} catch (JDOMException e) {
 			throw new ResourceException(e);
 		}
+		Connection connection = database.getConnection();
+		this.schema = database.getSchema();
 		setDialect(config.getString("dialect", "default"));
-		user = config.getRequiredString("username");
-		schema = config.getString("schema", "");
-		namemap.loadFromXML(tree.getChild("fieldnames"));
+		this.namemap.loadFromXML(tree.getChild("fieldnames"));
 		Element dialogProps = tree.getChild("properties");
 		DatabaseMetaData meta = connection.getMetaData();
 		
@@ -123,7 +117,6 @@ public class SqlGenerator {
 	
 	List<String> getInitializations() {
 		Map<String,String> myvars = new HashMap<String,String>();
-		myvars.put("user", this.user);
 		myvars.put("schema", this.schema);
 		List<String> result = new ArrayList<String>();
 		Element initialize = tree.getChild("initialize");
@@ -136,17 +129,14 @@ public class SqlGenerator {
 		return result;
 	}
 	
-	String getUser() { 
-		return this.user; 
-	}
-
 	/**
 	 * Return schema name as specified by property setting
 	 * or "" if not specified.
-	 */
+	 *
 	String getSchema() {
 		return sqlCase(this.schema);
 	}
+	*/
 	
 	String sqlCase(String name) {
 		if (namecase.equals("lower"))
@@ -218,8 +208,7 @@ public class SqlGenerator {
 			Map<String,String> vars) {
 		String sql = tree.getChild("templates").getChildText(templateName);
 		Map<String,String> myvars = new HashMap<String,String>();
-		myvars.put("user", this.user);
-		myvars.put("schema", getSchema());
+		myvars.put("schema", this.schema);
 		myvars.put("table", sqlCase(tableName));
 		myvars.put("keyvalue", "?");
 		if (vars != null) myvars.putAll(vars);
@@ -295,13 +284,13 @@ public class SqlGenerator {
 				// if the variable (e.g. $schema) is null or zero length
 				// then also consume a period following the variable
 				// i.e. "insert into $schema.$table" becomes "insert into $table"
+				sql = sql.replaceAll("\\$\\{" + name + "\\}\\.?", "");
 				sql = sql.replaceAll("\\$" + name + "\\.", "");
 				sql = sql.replaceAll("\\$" + name + "\\b", "");
-				sql = sql.replaceAll("\\$\\{" + name + "\\}\\.?", "");
 			}
 			else {
-				sql = sql.replaceAll("\\$" + name + "\\b", value);
 				sql = sql.replaceAll("\\$\\{" + name + "\\}", value);
+				sql = sql.replaceAll("\\$" + name + "\\b", value);
 			}
 		}
 		return sql;		

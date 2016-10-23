@@ -3,13 +3,14 @@ package servicenow.common.soap;
 import static org.junit.Assert.*;
 
 import org.slf4j.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import servicenow.common.soap.Session;
 import servicenow.common.soap.Table;
 import servicenow.common.soap.TableReader;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class PropertiesTest {
 

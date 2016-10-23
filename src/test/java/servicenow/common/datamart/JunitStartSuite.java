@@ -9,8 +9,6 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 
-// import servicenow.common.soap.*;
-
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.FieldValues;
 import servicenow.common.soap.Key;

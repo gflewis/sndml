@@ -7,7 +7,6 @@ import org.jdom2.Element;
 
 import servicenow.common.datamart.JobOperation;
 import servicenow.common.datamart.LoadMethod;
-
 import servicenow.common.soap.Record;
 import servicenow.common.soap.RecordList;
 import servicenow.common.soap.Table;

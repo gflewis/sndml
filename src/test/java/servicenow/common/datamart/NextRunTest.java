@@ -5,15 +5,14 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import servicenow.common.datamart.LoggerFactory;
 import servicenow.common.datamart.SuiteModel;
-// import servicenow.common.soap.*;
-
 import servicenow.common.soap.DateTime;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class NextRunTest {
 

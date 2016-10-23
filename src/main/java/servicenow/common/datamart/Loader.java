@@ -6,8 +6,6 @@ import java.util.*;
 import java.io.*;
 
 import org.slf4j.Logger;
-import org.apache.commons.cli.Options;
-import org.jdom2.JDOMException;
 
 import servicenow.common.datamart.CommandScript;
 import servicenow.common.datamart.DatamartConfiguration;
@@ -22,6 +20,9 @@ import servicenow.common.datamart.SuiteException;
 import servicenow.common.datamart.SuiteModel;
 import servicenow.common.soap.Record;
 import servicenow.common.soap.Session;
+
+import org.apache.commons.cli.Options;
+import org.jdom2.JDOMException;
 
 /**
  * Main class and entry point for the Datamart Loader application.
@@ -79,16 +80,6 @@ public class Loader {
 			showHelp();
 			return;
 		}
-		/*
-		else if (operation.equals("cancel")) {
-			logger.info("operation=cancel");
-			SignalMonitor.shutdownAllServers();
-			return;
-		}
-		else {
-			SignalMonitor.clearSignal();
-		}
-		*/
 
 		Loader loader = new Loader();
 		

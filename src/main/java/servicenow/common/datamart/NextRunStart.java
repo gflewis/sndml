@@ -8,7 +8,6 @@ import servicenow.common.datamart.DatamartConfiguration;
 import servicenow.common.datamart.LoggerFactory;
 import servicenow.common.datamart.NextRunStart;
 import servicenow.common.datamart.SignalMonitor;
-
 import servicenow.common.soap.DateTime;
 
 @Deprecated

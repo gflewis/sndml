@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.MDC;
-import org.jdom2.JDOMException;
 
 import servicenow.common.datamart.DatabaseWriter;
 import servicenow.common.datamart.DatamartConfiguration;
@@ -22,8 +21,6 @@ import servicenow.common.datamart.SuiteController;
 import servicenow.common.datamart.SuiteExecException;
 import servicenow.common.datamart.SuiteInitException;
 import servicenow.common.datamart.SuiteModelException;
-import servicenow.common.datamart.TargetTableWriter;
-import servicenow.common.datamart.TargetWriter;
 import servicenow.common.soap.BasicTableReader;
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.InvalidTableNameException;
@@ -37,6 +34,8 @@ import servicenow.common.soap.SoapResponseException;
 import servicenow.common.soap.Table;
 import servicenow.common.soap.TableConfiguration;
 import servicenow.common.soap.TableReader;
+
+import org.jdom2.JDOMException;
 
 /**
  * Contains methods to process DataPump jobs.
@@ -53,7 +52,7 @@ public class JobController {
 	final private String sqlTableName;
 	final private Table table;
 	private TableConfiguration tableConfig;
-	private TargetWriter database;
+	private DatabaseWriter database;
 	final private Logger logger;
 	final private String jobName;
     final private Metrics metrics;
@@ -155,7 +154,7 @@ public class JobController {
 		MDC.put("operation", operation.name().toLowerCase());
 		MDC.put("table", table == null ? "" : table.getName());
 		MDC.put("start", runStart.toString());
-		database = getSuiteController().getTargetWriter();
+		database = getSuiteController().getDatabaseWriter();
 		logger.debug("runJob start=" + runStart);
 		isResume = getStatus().equals(Status.RESUME);
 		if (isResume && isPersistent()) {
@@ -238,7 +237,7 @@ public class JobController {
 			metrics.clear();
 		}
 		assert published == metrics.recordsPublished();
-		TargetTableWriter writer = 
+		DatabaseTableWriter writer = 
 			database.getTableWriter(table, sqlTableName, model.isDV());
 		if (model.isTruncate() && published == 0) 
 			writer.truncateTable();
@@ -293,7 +292,7 @@ public class JobController {
 			throws IOException, InterruptedException, SQLException,
 				SuiteInitException, SuiteExecException, SuiteModelException {
 		int published = metrics.recordsPublished();
-		TargetTableWriter writer = 
+		DatabaseTableWriter writer = 
 				database.getTableWriter(table, sqlTableName, model.isDV());
 		while (reader.hasNext()) {
 			if (Thread.interrupted()) throw new InterruptedException();
@@ -343,7 +342,7 @@ public class JobController {
 		filter.addFilter("tablename", QueryFilter.EQUALS, table.getName());
 		filter.addCreatedFilter(intervalStart, intervalEnd);
 		TableReader reader = auditDelete.reader(filter);
-		TargetTableWriter writer = 
+		DatabaseTableWriter writer = 
 			database.getTableWriter(table, sqlTableName, model.isDV());
 		while (reader.hasNext()) {
 			if (Thread.interrupted()) throw new InterruptedException();

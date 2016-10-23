@@ -49,9 +49,9 @@ class TableProxy {
 	};
 		
 	final static Namespace nsSoapEnv = 
-		Namespace.getNamespace("env", "http://schemas.xmlsoap.org/soap/envelope/"); 	
+		Namespace.getNamespace("env", "http://schemas.xmlsoap.org/soap/envelope/");
     final static Namespace nsSoapEnc = 
-    	Namespace.getNamespace("enc", "http://schemas.xmlsoap.org/soap/encoding/");	
+    	Namespace.getNamespace("enc", "http://schemas.xmlsoap.org/soap/encoding/");
 
     public TableProxy(Table table) throws IOException {
 		this.table = table;
@@ -155,6 +155,8 @@ class TableProxy {
 			// making some attempt to detect them and throw an InsufficientRightsException
 			else if (faultString != null && faultString.toLowerCase().indexOf("insufficient rights") > -1)
 				throw new InsufficientRightsException(table, methodname, faultString);
+			else if (faultString != null && faultString.toLowerCase().indexOf("unsupported action") > -1)
+				throw new UnsupportedActionException(table, methodname, faultString);
 			else
 				throw new SoapResponseException(table, message, faultString);
 		}
@@ -175,11 +177,17 @@ class TableProxy {
 		}
 	
 		Element responseBody = responseDoc.getRootElement().getChild("Body", nsSoapEnv);
-		Element result = responseBody.getChild(responseElementName);
+		Element result = responseBody.getChildren().get(0);
+		assert result != null;
+		assert result.getName().equals(responseElementName); 
+		/*
 		if (result == null) {
-			responselog.error("Missing element: " + responseElementName + "\n" + responseBuffer);
+			responselog.error("Missing element: " + responseElementName +
+				" (is unqualified_element_form_default correct?)" +
+				"\n" + responseBuffer);
 			throw new SoapResponseException(table, methodname, responseBuffer);
 		}
+		*/
 		
 		session.updateSessionInfo(connection);
 		metrics.increment(table.getName(), methodname);

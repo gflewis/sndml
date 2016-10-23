@@ -28,12 +28,13 @@ public class FieldDefinition {
 	 */
 	protected FieldDefinition(Table table, Record dictionary) {
 		Element element = dictionary.element;
-		name = element.getChildText("element");
-		type = element.getChildText("internal_type");
+		Namespace ns = element.getNamespace();
+		name = element.getChildText("element", ns);
+		type = element.getChildText("internal_type", ns);
 		assert name != null : "Field has no name";
 		assert type != null : "Field " + name + " has no type";
-		max_length = Integer.parseInt(element.getChildText("max_length"));
-		ref_table = element.getChildText("reference");
+		max_length = Integer.parseInt(element.getChildText("max_length", ns));
+		ref_table = element.getChildText("reference", ns);
 		displayValue = false;
 	}
 

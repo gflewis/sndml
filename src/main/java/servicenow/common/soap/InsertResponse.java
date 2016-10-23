@@ -1,6 +1,7 @@
 package servicenow.common.soap;
 
 import org.jdom2.Element;
+import org.jdom2.Namespace;
 
 import servicenow.common.soap.Key;
 
@@ -15,14 +16,16 @@ import servicenow.common.soap.Key;
  */
 public class InsertResponse {
 
-	private Element element;
+	private final Element element;
+	private final Namespace ns;
 	
 	protected InsertResponse(Element insertResponse) {
 		this.element = insertResponse;
+		this.ns = this.element.getNamespace();
 	}
 	
-	public Key getSysId() {
-		String sysid = element.getChildText("sys_id");
+	public Key getSysId() {		
+		String sysid = element.getChildText("sys_id", ns);
 		return (sysid == null) ? null : new Key(sysid);
 	}
 	
@@ -35,25 +38,25 @@ public class InsertResponse {
 	 * table was an Import Set Table. Otherwise returns null;
 	 */
 	public String getStatus() {
-		return element.getChildText("status");
+		return element.getChildText("status", ns);
 	}
 	
 	/**
 	 * Returns null unless the target table was an Import Set Table.
 	 */
 	public String getStatusMessage() {
-		return element.getChildText("status_message");
+		return element.getChildText("status_message", ns);
 	}
 	
 	public String getDisplayName() {
-		return element.getChildText("display_name");
+		return element.getChildText("display_name", ns);
 	}
 	
 	public String getDisplayValue() {
-		return element.getChildText("display_value");
+		return element.getChildText("display_value", ns);
 	}
 	
 	public String getTable() {
-		return element.getChildText("table");
+		return element.getChildText("table", ns);
 	}
 }

@@ -1,5 +1,10 @@
 package servicenow.common.datamart;
 
+import java.util.*;
+import java.util.regex.*;
+
+import org.slf4j.Logger;
+
 import servicenow.common.datamart.DatabaseWriter;
 import servicenow.common.datamart.DatamartConfiguration;
 import servicenow.common.datamart.LoadMethod;
@@ -9,7 +14,6 @@ import servicenow.common.datamart.SqlFieldDefinition;
 import servicenow.common.datamart.SqlGenerator;
 import servicenow.common.datamart.SuiteExecException;
 import servicenow.common.datamart.SuiteInitException;
-import servicenow.common.datamart.TargetTableWriter;
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.InvalidDateTimeException;
 import servicenow.common.soap.InvalidFieldNameException;
@@ -19,11 +23,6 @@ import servicenow.common.soap.Record;
 import servicenow.common.soap.RecordList;
 import servicenow.common.soap.Table;
 import servicenow.common.soap.TableWSDL;
-
-import java.util.*;
-import java.util.regex.*;
-
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.sql.BatchUpdateException;
@@ -42,9 +41,12 @@ import org.jdom2.JDOMException;
  * @author Giles Lewis
  *
  */
-public class DatabaseTableWriter extends TargetTableWriter {
+public class DatabaseTableWriter {
 	
 	private final DatabaseWriter database;
+	private final Table table;
+	private final String sqlTableName;
+	private final Calendar dbCalendar;
 	private final java.sql.Connection dbc;
 	private final java.sql.DatabaseMetaData meta;
 	private final SqlGenerator generator;
@@ -55,8 +57,8 @@ public class DatabaseTableWriter extends TargetTableWriter {
 	
 	private final java.sql.PreparedStatement stmtInsert;
 	private final java.sql.PreparedStatement stmtUpdate;	
-	private final java.sql.PreparedStatement stmtReadTimestamp;
-	private final java.sql.PreparedStatement stmtDeleteRecord;
+	private java.sql.PreparedStatement stmtReadTimestamp = null;
+	private java.sql.PreparedStatement stmtDeleteRecord = null;
     private final String sqlInsert;
     private final String sqlUpdate;
     private final String sqlReadTimestamp;
@@ -65,8 +67,9 @@ public class DatabaseTableWriter extends TargetTableWriter {
 
     private final Pattern dateTimePattern = 
     	Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d");
-    private final Calendar gmtCalendar = 
-    	Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    // private final Calendar gmtCalendar = 
+    // 	Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+    // private Calendar dbCalendar;
     
 	DatabaseTableWriter(
 			DatabaseWriter database, 
@@ -74,15 +77,17 @@ public class DatabaseTableWriter extends TargetTableWriter {
 			String sqlTableName,
 			boolean displayValues)
 			throws SQLException, SuiteInitException, IOException {
-		super(database, table, sqlTableName);
+		// super(database, table, sqlTableName);
 		assert database != null;
 		assert table != null;
 		assert sqlTableName != null && sqlTableName.length() > 0;
 		this.database = database;
+		this.table = table;
 		this.dbc = database.getConnection();
 		this.meta = dbc.getMetaData();
 		this.generator = database.sqlGenerator();
 		this.sqlSchemaName = database.getSchema();
+		this.dbCalendar = database.getCalendar();
 		assert sqlSchemaName != null;
 		if (sqlTableName == null || sqlTableName.length() == 0)
 			throw new AssertionError("tableName is null");		
@@ -110,10 +115,6 @@ public class DatabaseTableWriter extends TargetTableWriter {
 		stmtInsert = dbc.prepareStatement(sqlInsert);
 		logger.debug("Prepare " + sqlUpdate);
 		stmtUpdate = dbc.prepareStatement(sqlUpdate);
-		logger.debug("Prepare " + sqlDeleteRecord);
-		stmtDeleteRecord = dbc.prepareStatement(sqlDeleteRecord);
-		logger.debug("Prepare " + sqlReadTimestamp);
-		stmtReadTimestamp = dbc.prepareStatement(sqlReadTimestamp);
 		DatamartConfiguration config = 
 			DatamartConfiguration.getDatamartConfiguration();
 		warnOnTruncate = config.getBoolean("warn_on_truncate",  true);
@@ -123,8 +124,8 @@ public class DatabaseTableWriter extends TargetTableWriter {
 		try {
 			stmtInsert.close();
 			stmtUpdate.close();
-			stmtReadTimestamp.close();
-			stmtDeleteRecord.close();			
+			if (stmtReadTimestamp != null) stmtReadTimestamp.close();
+			if (stmtDeleteRecord != null) stmtDeleteRecord.close();			
 		}
 		catch (SQLException e) {
 			logger.warn("failed to close database statement", e);			
@@ -319,7 +320,7 @@ public class DatabaseTableWriter extends TargetTableWriter {
 			try {
 				dt = new DateTime(value);
 				java.sql.Date sqldate = new java.sql.Date(dt.getMillisec());
-				stmt.setDate(bindCol, sqldate, gmtCalendar);
+				stmt.setDate(bindCol, sqldate, dbCalendar);
 			}
 			catch (InvalidDateTimeException e) {
 				logger.warn(rec.getKey() + " date error: " +
@@ -334,7 +335,7 @@ public class DatabaseTableWriter extends TargetTableWriter {
 			try { 
 				ts = new DateTime(value);
 				java.sql.Timestamp sqlts = new java.sql.Timestamp(ts.getMillisec());
-				stmt.setTimestamp(bindCol, sqlts, gmtCalendar);
+				stmt.setTimestamp(bindCol, sqlts, dbCalendar);
 			}
 			catch (InvalidDateTimeException e) {
 				logger.warn(rec.getKey() + " timestamp error: " +
@@ -539,6 +540,10 @@ public class DatabaseTableWriter extends TargetTableWriter {
 	
 	boolean deleteRecord(Key key) 
 			throws SQLException {
+		if (stmtDeleteRecord == null) {
+			logger.debug("Prepare " + sqlDeleteRecord);
+			stmtDeleteRecord = dbc.prepareStatement(sqlDeleteRecord);
+		}
 		int count = 0;
 		stmtDeleteRecord.setString(1, key.toString());
 		count = stmtDeleteRecord.executeUpdate();
@@ -557,6 +562,10 @@ public class DatabaseTableWriter extends TargetTableWriter {
 	 * @throws ParseException
 	 */
 	DateTime getTimestamp(Key key) throws SQLException {
+		if (stmtReadTimestamp == null) {
+			logger.debug("Prepare " + sqlReadTimestamp);
+			stmtReadTimestamp = dbc.prepareStatement(sqlReadTimestamp);
+		}
 		DateTime result = null;
 		stmtReadTimestamp.setString(1, key.toString());
 		ResultSet rset = stmtReadTimestamp.executeQuery();

@@ -1,16 +1,12 @@
 package servicenow.common.datamart;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.sql.SQLException;
 import java.util.Date;
 
 import org.slf4j.Logger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-// import servicenow.common.soap.*;
 
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.FieldValues;
@@ -18,6 +14,10 @@ import servicenow.common.soap.Key;
 import servicenow.common.soap.Record;
 import servicenow.common.soap.Session;
 import servicenow.common.soap.Table;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class JunitDetermineLag {
 
@@ -31,6 +31,7 @@ public class JunitDetermineLag {
 	@Test
 	public void test() throws Exception {
 		Session session = AllTests.getSession();
+		assumeTrue(session.tableExists("u_datapump_jobset"));
 		Table table = session.table("u_datapump_jobset");
 		Record rec1 = table.get("u_name", "junit-location-load");
 		Key key1 = rec1.getKey();

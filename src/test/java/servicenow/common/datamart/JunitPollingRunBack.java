@@ -1,12 +1,5 @@
 package servicenow.common.datamart;
 
-import servicenow.common.soap.DateTime;
-import servicenow.common.soap.FieldValues;
-import servicenow.common.soap.Key;
-import servicenow.common.soap.Record;
-import servicenow.common.soap.Session;
-import servicenow.common.soap.Table;
-
 import static org.junit.Assert.*;
 
 import org.junit.*;
@@ -15,7 +8,12 @@ import org.slf4j.Logger;
 import servicenow.common.datamart.Loader;
 import servicenow.common.datamart.Status;
 import servicenow.common.datamart.SuiteModel;
-// import servicenow.common.soap.*;
+import servicenow.common.soap.DateTime;
+import servicenow.common.soap.FieldValues;
+import servicenow.common.soap.Key;
+import servicenow.common.soap.Record;
+import servicenow.common.soap.Session;
+import servicenow.common.soap.Table;
 
 import java.sql.SQLException;
 

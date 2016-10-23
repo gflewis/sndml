@@ -5,12 +5,13 @@ import static org.junit.Assert.*;
 import java.util.Properties;
 
 import org.slf4j.Logger;
-import org.junit.Test;
 
 import servicenow.common.soap.BasicTableReader;
 import servicenow.common.soap.KeyList;
 import servicenow.common.soap.Session;
 import servicenow.common.soap.Table;
+
+import org.junit.Test;
 
 public class CompressionTest {
 

@@ -53,7 +53,8 @@ public class Table {
 	final String tablename;
 	final Session session;
 	final TableConfiguration config;
-	final Namespace nsTNS;
+	final Namespace nsTNS; // Table Namespace
+	// final Namespace nsEle; // Element Namespace
 	final TableProxy proxy;
 	final TableWSDL wsdl;
 	TableWSDL dvWsdl;
@@ -92,6 +93,8 @@ public class Table {
 		requestlog = Session.getLogger("Request." + tablename);
 		responselog = Session.getLogger("Response." + tablename);
 		nsTNS = Namespace.getNamespace("tns", "http://www.service-now.com/" + tablename);
+		// nsEle = session.unqualified_element_form_default ? null : nsTNS;
+
 		proxy = new TableProxy(this);
 		wsdl = new TableWSDL(session, tablename);
 		// this parameter can be named either "chunk" or "limit"
@@ -105,6 +108,12 @@ public class Table {
 	Namespace getNamespace() { return this.nsTNS; }
 	TableConfiguration getConfiguration() { return this.config; }
 
+	@Deprecated
+	public boolean isSystemTable() {
+		return tablename.startsWith("sys_") ||
+			tablename.equals("discovery_log");
+	}
+	
 	public TableWSDL getWSDL(boolean dv) throws IOException { 
 		if (dv) {
 			if (dvWsdl == null)
@@ -375,7 +384,8 @@ public class Table {
 		Element element = new Element("deleteRecord", getNamespace());
 		element.addContent(new Element("sys_id").setText(sysid.toString()));
 		Element deleteResponse = proxy.callSoap(element, "deleteRecordResponse");
-		String count = deleteResponse.getChildText("count");
+		Namespace ns = deleteResponse.getNamespace();
+		String count = deleteResponse.getChildText("count", ns);
 		responselog.info("deleteRecord count=" + count + " sys_id=" + sysid);
 		boolean result = Integer.parseInt(count) > 0;
 		return result;
@@ -384,7 +394,8 @@ public class Table {
 	private Key _update(Element method)
 			throws IOException, SoapResponseException {
 		Element insertResponse = proxy.callSoap(method, "updateResponse");
-		String sysid = insertResponse.getChildText("sys_id");
+		Namespace ns = insertResponse.getNamespace();
+		String sysid = insertResponse.getChildText("sys_id", ns);
 		responselog.info("update sys_id=" + sysid);
 		if (sysid == null || sysid.equals(""))
 			throw new IllegalArgumentException("missing sys_id");
@@ -583,12 +594,13 @@ public class Table {
 			throws IOException, SoapResponseException {
 		Element method = createXmlElement("getKeys", params);
 		Element responseElement = proxy.callSoap(method, "getKeysResponse");
-		int size = Integer.parseInt(responseElement.getChildText("count"));
+		Namespace ns = responseElement.getNamespace();
+		int size = Integer.parseInt(responseElement.getChildText("count", ns));
 		responselog.trace("getKeys returned " + size + " keys");
 		KeyList result = new KeyList();
 		if (size > 0) {
 			result.ensureCapacity(size);
-			String listStr = responseElement.getChildText("sys_id");
+			String listStr = responseElement.getChildText("sys_id", ns);
 			String list[] = listStr.split(",");
 			if (list.length != size)
 				throw new SoapResponseException(this, 
@@ -660,10 +672,11 @@ public class Table {
 		if (filter != null)	params.add(filter.asParameters());
 		Element method = createXmlElement("aggregate", params);
 		Element responseElement = proxy.callSoap(method, "aggregateResponse");
-		Element responseResult = responseElement.getChild("aggregateResult");		
-		String count = responseResult.getChildText("COUNT");
+		Namespace ns = responseElement.getNamespace();
+		Element responseResult = responseElement.getChild("aggregateResult", ns);		
+		String count = responseResult.getChildText("COUNT", ns);
 		if (count == null || count.length() == 0) 
-			count = responseResult.getChildText("count");
+			count = responseResult.getChildText("count", ns);
 		responselog.debug("COUNT=" + count);
 		if (count == null || count.length() == 0)
 			throw new SoapResponseException(this,

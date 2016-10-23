@@ -33,7 +33,7 @@ public class SimpleLoadTest {
 	@Test
 	public void loadTest() throws Exception {
 		int count = loadTable("cmn_department");
-		assertTrue(count > 50);
+		assertTrue(count > 5);
 	}
 
 	@After

@@ -9,9 +9,8 @@ import servicenow.common.soap.Record;
 import servicenow.common.soap.RecordList;
 import servicenow.common.soap.Session;
 import servicenow.common.soap.Table;
+
 import static org.junit.Assert.*;
-
-
 
 public class TableTest {
 

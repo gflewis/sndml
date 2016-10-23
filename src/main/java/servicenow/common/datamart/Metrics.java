@@ -3,7 +3,6 @@ package servicenow.common.datamart;
 import org.slf4j.Logger;
 
 import servicenow.common.datamart.Metrics;
-
 import servicenow.common.soap.FieldValues;
 import servicenow.common.soap.Record;
 

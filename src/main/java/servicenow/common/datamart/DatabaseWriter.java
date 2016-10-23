@@ -14,8 +14,6 @@ import servicenow.common.datamart.ResourceException;
 import servicenow.common.datamart.ResourceManager;
 import servicenow.common.datamart.SqlGenerator;
 import servicenow.common.datamart.SuiteInitException;
-import servicenow.common.datamart.TargetTableWriter;
-import servicenow.common.datamart.TargetWriter;
 import servicenow.common.soap.Table;
 
 /**
@@ -24,13 +22,15 @@ import servicenow.common.soap.Table;
  * Initialization statements from sqltemplates.xml are 
  * executed immediately upon opening the connection.
  */
-public class DatabaseWriter extends TargetWriter {
+public class DatabaseWriter {
 
 	private final DatamartConfiguration config;
 	private SqlGenerator generator;
 	private Connection dbc;
 	DatabaseMetaData meta;
 	private String schema;
+	private String timezoneName;
+	private Calendar calendar;
 	private boolean autoCreate;
 	private boolean batchInserts;
 
@@ -42,17 +42,40 @@ public class DatabaseWriter extends TargetWriter {
 		open();
 	}
 	
-	@Override
 	void open() throws ResourceException {
 		if (dbc != null) return;
 		try {
 			dbc = ResourceManager.getNewConnection(config);
 			meta = dbc.getMetaData();
 			assert dbc != null;
+			String dbProductName = meta.getDatabaseProductName();
+			String dbProductVersion = meta.getDatabaseProductVersion();
+			String username = config.getRequiredString("username");
 			autoCreate = config.getBoolean("autocreate",  true);
-			batchInserts = config.getBoolean("batch_inserts",  false);
-			logger.info("autocreate=" + autoCreate + " batch_inserts=" + batchInserts);
-			generator = new SqlGenerator(config, dbc);
+			timezoneName = config.getString("timezone", "GMT");
+			calendar = Calendar.getInstance(TimeZone.getTimeZone(timezoneName));
+			batchInserts = config.getBoolean("batch_inserts",  false);			
+			schema = config.getString("schema");
+			if (schema == null) 
+				schema = "";
+			if (schema.length() == 0) {
+				if (dbProductName.equalsIgnoreCase("Oracle"))
+					schema = username;
+				if (dbProductName.equalsIgnoreCase("Microsoft SQL Server"))
+					schema = "dbo";
+			}
+			schema = sqlCase(schema);
+			generator = new SqlGenerator(config, this);
+			logger.info("JDBC driver" + 
+			    " name=\"" + meta.getDriverName() + "\"" + 
+				" version=" + meta.getDriverVersion());
+			logger.info("JDBC database product" + 
+			    " name=\"" + dbProductName + "\"" + 
+				" version=" + dbProductVersion);
+			logger.info("schema=" + getSchema());
+			logger.info("timezoneName=" + calendar.getTimeZone().getDisplayName()); 
+			logger.info("autocreate=" + autoCreate); 
+			logger.info("batch_inserts=" + batchInserts);
 			initialize();
 		}
 		catch (SQLException e) {
@@ -65,7 +88,6 @@ public class DatabaseWriter extends TargetWriter {
 		super.finalize();		
 	}
 	
-	@Override
 	void close() {
 		if (dbc == null) return;
 		logger.info("close database connection");
@@ -80,28 +102,10 @@ public class DatabaseWriter extends TargetWriter {
 	
 	/**
 	 * Initialize the database connection.
-	 * Set the timezone to GMT.
+	 * Set the timezoneName to GMT.
 	 * Set the date format to YYYY-MM-DD
 	 */
 	private void initialize() throws SQLException {
-		String dbProductName = meta.getDatabaseProductName();
-		String dbProductVersion = meta.getDatabaseProductVersion();
-		String username = config.getRequiredString("username");
-		schema = config.getString("schema");
-		if (schema == null) 
-			schema = "";
-		if (schema.length() == 0 && dbProductName.equalsIgnoreCase("Oracle")) 
-			schema = username;
-		schema = sqlCase(schema);
-		assert schema != null;
-		logger.debug("schema=" + schema);
-		logger.info("JDBC driver" + 
-		    " name=\"" + meta.getDriverName() + "\"" + 
-			" version=" + meta.getDriverVersion());
-		logger.info("JDBC database product" + 
-		    " name=\"" + dbProductName + "\"" + 
-			" version=" + dbProductVersion);
-		
 		dbc.setAutoCommit(false);
 		Statement stmt = dbc.createStatement();
 		Iterator<String> iter = generator.getInitializations().listIterator();
@@ -126,7 +130,7 @@ public class DatabaseWriter extends TargetWriter {
 		return dbc;
 	}
 	
-	TargetTableWriter getTableWriter(
+	DatabaseTableWriter getTableWriter(
 			Table table, 
 			String sqlTableName, 
 			boolean displayValues) 
@@ -151,7 +155,6 @@ public class DatabaseWriter extends TargetWriter {
 		dbc.commit();
 	}
 	
-	@Override
 	void rollback() {
 		try {
 			dbc.rollback();
@@ -162,6 +165,7 @@ public class DatabaseWriter extends TargetWriter {
 	
 	SqlGenerator sqlGenerator() { return this.generator; }
 	String getSchema() { return this.schema; }
+	Calendar getCalendar() { return this.calendar; }
 	boolean autoCreate() { return this.autoCreate; }
 	boolean batchInserts() { return this.batchInserts; }
 
@@ -212,7 +216,6 @@ public class DatabaseWriter extends TargetWriter {
 	/**
 	 * Create a table in the target database if it does not already exist.
 	 */
-	@Override
 	void createMissingTargetTable(Table table, String sqlTableName,	boolean displayValues) 
 			throws SQLException, SuiteInitException {
 		if (!autoCreate) return;

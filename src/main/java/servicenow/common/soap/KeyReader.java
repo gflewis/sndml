@@ -40,13 +40,13 @@ class KeyReader {
 		this.chunkSize = config.getInt("getkeys_chunk",
 				config.getInt("getkeys_limit",  DEFAULT_GETKEYS_CHUNKSIZE));
 		// checkCount adds overhead of an additional Web Services "aggregate" call
-		checkCount =
-			table.getConfiguration().getBoolean("check_count", true) ||
-			table.requestlog.isDebugEnabled() || 
-			table.responselog.isDebugEnabled();
+		checkCount = table.session.aggregates;
 		if (checkCount) {
 			expectedCount = new Integer(table.getCount(filter));
 			table.requestlog.debug("expected count=" + expectedCount);
+		}
+		else {
+			expectedCount = null;
 		}
 	}
 

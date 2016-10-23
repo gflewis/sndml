@@ -3,7 +3,6 @@ package servicenow.common.soap;
 import servicenow.common.soap.InvalidFieldNameException;
 import servicenow.common.soap.Parameters;
 import servicenow.common.soap.QuerySort;
-// import servicenow.common.soap.SortType;
 import servicenow.common.soap.Table;
 
 /**

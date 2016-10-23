@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Map;
 
 import org.junit.*;
+import static org.junit.Assume.*;
 import org.slf4j.Logger;
 
 import servicenow.common.soap.QueryFilter;
@@ -18,6 +19,8 @@ public class AggregateTest {
 	@Test
 	public void testCount() throws Exception {
 		Session session = AllTests.getSession();
+		assumeTrue(session.aggregates);
+		if (!session.aggregates) return;
 		Table location = session.table("cmn_location");
 		int countAll = location.getCount();
 		logger.info("countAll=" + countAll);
@@ -37,6 +40,8 @@ public class AggregateTest {
 	@Test
 	public void testCountByClass() throws Exception {
 		Session session = AllTests.getSession();
+		assumeTrue(session.aggregates);
+		if (!session.aggregates) return;
 		Table service = session.table("cmdb_ci_service");
 		int allServices = service.getCount();
 		Map<String,Integer> allRows = service.getCount("sys_class_name");

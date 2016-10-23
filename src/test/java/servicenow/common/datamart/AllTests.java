@@ -1,20 +1,12 @@
 package servicenow.common.datamart;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-import org.jdom2.JDOMException;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import servicenow.common.datamart.CommandScript;
 import servicenow.common.datamart.DatabaseWriter;
@@ -23,9 +15,14 @@ import servicenow.common.datamart.EphemeralSuite;
 import servicenow.common.datamart.Loader;
 import servicenow.common.datamart.PersistentSuite;
 import servicenow.common.datamart.SuiteModel;
-
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.Session;
+
+import org.slf4j.Logger;
+import org.jdom2.JDOMException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -57,7 +54,7 @@ import servicenow.common.soap.Session;
 
 public class AllTests {
 
-	static String propFileName = "awsmysql.properties";
+	// static String propFileName = "junit.properties";
 	
 	private static Properties properties = null;
 	private static Session session = null;
@@ -68,7 +65,9 @@ public class AllTests {
 		getConfiguration();
 	}
 	
+	
 	public static Properties getProperties() throws IOException {
+		/*
 		if (properties != null) return properties;
 		logger.info("getProperties loading " + propFileName);
 		properties = new Properties();
@@ -76,9 +75,14 @@ public class AllTests {
 		if (stream == null)
 			throw new IOException("Unable to load " + propFileName);
 		properties.load(stream);
+		*/
+		if (properties == null) {
+			properties = servicenow.common.soap.AllTests.getProperties();
+		}
 		return properties;
 	}
 
+	/*
 	public static void printFile(String filename) throws IOException {
 		logger.info("printFile: " + filename);
 		InputStream stream = ClassLoader.getSystemResourceAsStream(propFileName);
@@ -88,6 +92,7 @@ public class AllTests {
 			logger.info(line);
 		}		
 	}
+	*/
 		
 	public static DatamartConfiguration getConfiguration() throws IOException {
 		Properties props = getProperties();

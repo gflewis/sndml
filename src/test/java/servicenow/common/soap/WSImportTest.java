@@ -3,14 +3,15 @@ package servicenow.common.soap;
 import static org.junit.Assert.*;
 
 import org.slf4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
 
 import servicenow.common.soap.FieldValues;
 import servicenow.common.soap.FieldValuesList;
 import servicenow.common.soap.InsertMultipleResponse;
 import servicenow.common.soap.Session;
 import servicenow.common.soap.Table;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class WSImportTest {
 

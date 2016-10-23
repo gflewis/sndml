@@ -4,7 +4,6 @@ import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.MDC;
-import org.jdom2.JDOMException;
 
 import servicenow.common.datamart.DatamartConfiguration;
 import servicenow.common.datamart.JobController;
@@ -19,9 +18,10 @@ import servicenow.common.datamart.SuiteExecException;
 import servicenow.common.datamart.SuiteInitException;
 import servicenow.common.datamart.SuiteModel;
 import servicenow.common.datamart.SuiteModelException;
-import servicenow.common.datamart.TargetWriter;
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.Session;
+
+import org.jdom2.JDOMException;
 
 /**
  * Contains a collection of jobs as loaded from a script file
@@ -33,7 +33,7 @@ public class SuiteController implements Runnable {
 
 	// private final SignalMonitor monitor;
 	private final DatamartConfiguration config;
-	private TargetWriter writer = null;
+	private DatabaseWriter writer = null;
 	
 	DateTime lastRunStart;
 	DateTime runStart;
@@ -86,8 +86,9 @@ public class SuiteController implements Runnable {
 	 * Defer opening of a target connection (database) until it is needed.
 	 * The suite controller could have been constructed in a different thread.
 	 */
-	TargetWriter getTargetWriter() {
-		if (writer == null) writer = TargetWriter.newTargetWriter(config);
+	DatabaseWriter getDatabaseWriter() {
+		// if (writer == null) writer = TargetWriter.newTargetWriter(config);
+		if (writer == null) writer = new DatabaseWriter(config);
 		return writer;
 	}
 	

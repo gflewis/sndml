@@ -5,12 +5,13 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
-import org.junit.*;
 
 import servicenow.common.datamart.PersistentSuite;
 import servicenow.common.datamart.Status;
 import servicenow.common.datamart.SuiteController;
 import servicenow.common.soap.DateTime;
+
+import org.junit.*;
 
 public class JunitStartRunning {
 

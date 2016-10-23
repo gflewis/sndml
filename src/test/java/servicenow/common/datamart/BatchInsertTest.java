@@ -5,11 +5,12 @@ import static org.junit.Assert.*;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
+
+import servicenow.common.datamart.SuiteModel;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import servicenow.common.datamart.SuiteModel;
 
 public class BatchInsertTest {
 

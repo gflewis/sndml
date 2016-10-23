@@ -18,7 +18,6 @@ import servicenow.common.datamart.SuiteController;
 import servicenow.common.datamart.SuiteInitException;
 import servicenow.common.datamart.SuiteModel;
 import servicenow.common.datamart.SuiteModelException;
-
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.Session;
 

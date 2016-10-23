@@ -1,13 +1,13 @@
 package servicenow.common.datamart;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
 import servicenow.common.datamart.CommandBuffer;
 import servicenow.common.datamart.LoggerFactory;
 import servicenow.common.datamart.SuiteParseException;
 import servicenow.common.soap.DateTime;
 import servicenow.common.soap.InvalidDateTimeException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 
 /**
  * This class implements a simple parser that reads tokens from a text buffer.
@@ -48,7 +48,6 @@ public class CommandBuffer {
 	 * The token "now" corresponds to the current date and time.
 	 * The token "today" corresponds to midnight GMT.
 	 *    
-	 * @throws SuiteParseException
 	 */
 	public DateTime getDate() throws SuiteParseException {
 		final String MIDNIGHT = "00:00:00";

@@ -30,6 +30,7 @@ public final class Record {
 	final protected Table table;
 	final protected Key key;
 	final protected Element element;
+	final protected Namespace ns;
 	protected DateTime updatedTimestamp;
 	protected DateTime createdTimestamp;
 	
@@ -37,26 +38,22 @@ public final class Record {
 			throws SoapResponseException {
 		this.table = table;
 		this.element = element;
-		String sysid = element.getChildText("sys_id");
+		this.ns = element.getNamespace();
+		String sysid = element.getChildText("sys_id", ns);
 		if (sysid == null || sysid.length() == 0)
 			throw new SoapResponseException(this.table, 
 				"Missing sys_id in SOAP response" + 
 				" (probably a missing Access Control)", getXML());
 		key = new Key(sysid);
-		String updated_on = element.getChildText("sys_updated_on");
-		String created_on = element.getChildText("sys_created_on");
-		try {
-			this.updatedTimestamp = new DateTime(updated_on);
-			this.createdTimestamp = new DateTime(created_on);
-		} catch (Exception e) {
-			// allow timestamps to be missing for system tables
-			if (!this.table.getName().startsWith("sys_")) {
-				throw new SoapResponseException(this.table, 
-					"Invalid sys_updated_on=" + updated_on +
-					" sys_created_on=" + created_on,
-					getXML());
-			}
-		}
+		String updated_on = element.getChildText("sys_updated_on", ns);
+		String created_on = element.getChildText("sys_created_on", ns);
+		if (created_on == null)
+			throw new SoapResponseException(this.table, 
+				"Missing sys_created_on", getXML());
+		this.createdTimestamp =
+			created_on == null ? null : new DateTime(created_on);
+		this.updatedTimestamp =
+			updated_on == null ? null : new DateTime(updated_on);
 	}
 
 	/**
@@ -141,7 +138,7 @@ public final class Record {
 	 */
 	public String getField(String fieldname, boolean validate) 
 			throws InvalidFieldNameException {
-		String result = element.getChildText(fieldname);
+		String result = element.getChildText(fieldname, ns);
 		if (result == null) {
 			if (validate) {
 				if (!table.getWSDL().canReadField(fieldname))
@@ -180,7 +177,7 @@ public final class Record {
 			throw new IllegalStateException(
 				"DisplayValues not enabled; use setDisplayValue(true)");
 		String dvname = "dv_" + fieldname;
-		String result = element.getChildText(dvname);
+		String result = element.getChildText(dvname, ns);
 		if (result == null) {
 			FieldDefinition fd = table.getSchema().getFieldDefinition(fieldname);
 			if (fd.isReference()) 
@@ -194,7 +191,7 @@ public final class Record {
 	}
 	
 	public Key getReference(String fieldname) throws InvalidFieldNameException {		
-		String value = element.getChildText(fieldname);
+		String value = element.getChildText(fieldname, ns);
 		if (value == null || value.length() == 0) return null;
 		if (table.validate) {
 			FieldDefinition defn = table.getSchema().getFieldDefinition(fieldname);

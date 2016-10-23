@@ -12,8 +12,6 @@ import servicenow.common.datamart.DatamartConfiguration;
 import servicenow.common.datamart.LoggerFactory;
 import servicenow.common.datamart.ResourceException;
 import servicenow.common.datamart.ResourceManager;
-import servicenow.common.datamart.TargetWriter;
-
 import servicenow.common.soap.Session;
 import servicenow.common.soap.Table;
 import servicenow.common.soap.TableSchema;
@@ -31,7 +29,7 @@ public class ResourceManager {
 	static private DatamartConfiguration globalConfig;
 	static private Session globalSession;
 	static private Session schemaSession;
-	static private TargetWriter globalWriter;
+	static private DatabaseWriter globalWriter;
 			
 	private static DatamartConfiguration getConfiguration() {
 		if (globalConfig == null) {
@@ -55,6 +53,7 @@ public class ResourceManager {
 	 * Establish a new ServiceNow session
 	 */
 	static Session getNewSession() throws ResourceException {
+		logger.debug("getNewSession");
 		try {
 			return new Session(DatamartConfiguration.getSessionConfiguration());
 		} catch (IOException e) {
@@ -100,17 +99,21 @@ public class ResourceManager {
 		TableSchema tableSchema = schemaTable.getSchema();
 		return tableSchema;
 	}
-		
-	public static TargetWriter getMainTargetWriter() {
+
+	@Deprecated
+	public static DatabaseWriter getMainTargetWriter() {
 		if (globalWriter == null) {
 			assert Thread.currentThread().equals(mainThread);
-			globalWriter = getNewTargetWriter();
+			DatamartConfiguration config = getConfiguration();
+			globalWriter = new DatabaseWriter(config);
 		}
 		return globalWriter;	
 	}
-	
-	public static TargetWriter getNewTargetWriter() {
-		return TargetWriter.newTargetWriter(getConfiguration());
+
+	@Deprecated
+	public static DatabaseWriter getNewTargetWriter() {
+		DatamartConfiguration config = getConfiguration();
+		return new DatabaseWriter(config);
 	}
 	
 

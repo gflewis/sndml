@@ -1,6 +1,7 @@
 package servicenow.common.soap;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import java.util.HashMap;
 
@@ -48,7 +49,7 @@ public class KeyListTest {
 		Table big = session.table("cmdb_ci_ip_address");
 		BasicTableReader reader = big.reader();
 		KeyList keys = reader.getKeys();
-		assertTrue(keys.size() > 40000);
+		assumeTrue(keys.size() > 40000);
 		HashMap<Key,Boolean> hash = new HashMap<Key,Boolean>();
 		for (Key key : keys) {
 			assertNull(hash.get(key));
