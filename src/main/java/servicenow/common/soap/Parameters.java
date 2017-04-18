@@ -10,9 +10,8 @@ import servicenow.common.soap.Parameters;
  * 
  * @author Giles Lewis
  */
+@SuppressWarnings("serial")
 class Parameters extends LinkedHashMap<String, String> {
-
-	private static final long serialVersionUID = 1L;
 
 	public Parameters() {
 		super();
@@ -35,6 +34,10 @@ class Parameters extends LinkedHashMap<String, String> {
 	public void add(Parameters params) {
 		if (params == null) return;
 		super.putAll(params);
+	}
+	
+	public boolean contains(String name) {
+		return super.containsKey(name);
 	}
 	
 	public Key getSysId() {

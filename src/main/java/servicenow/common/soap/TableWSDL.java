@@ -28,8 +28,8 @@ import servicenow.common.soap.WSDLException;
 public class TableWSDL {
 	
 	final private Document doc;
-	final List<String> readColumnNames;
-	final List<String> writeColumnNames;
+	final FieldNames readColumnNames;
+	final FieldNames writeColumnNames;
 	final Map<String,String> readColumnTypes;
 	final Map<String,String> writeColumnTypes;
 	
@@ -108,17 +108,17 @@ public class TableWSDL {
 		return sequence;
 	}
 
-	public List<String> getColumnNames(String typeName) throws WSDLException {
+	private FieldNames getColumnNames(String typeName) throws WSDLException {
 		Element schema = getTypeDefinition(typeName);
 		List<Element> children = schema.getChildren("element", nsXSD);
-		List<String> list = new ArrayList<String>(children.size());
+		FieldNames list = new FieldNames(children.size());
 		for (Element child : children) {
 			list.add(child.getAttributeValue("name"));
 		}
 		return list;		
 	}
 	
-	public Map<String,String> getColumnTypes(String typeName) throws WSDLException {
+	private Map<String,String> getColumnTypes(String typeName) throws WSDLException {
 		Element schema = getTypeDefinition(typeName);
 		List<Element> children = schema.getChildren("element", nsXSD);
 		HashMap<String,String> map = new HashMap<String,String>(children.size());
@@ -135,14 +135,13 @@ public class TableWSDL {
 	 * Return a list of all the columns in the table.
 	 * @throws WSDLException 
 	 */
-	public List<String> getReadColumnNames() {
+	public FieldNames getReadColumnNames() {
 		return readColumnNames;
 	}
 	
-	public List<String> getWriteColumnNames() {
+	public FieldNames getWriteColumnNames() {
 		return writeColumnNames;
 	}
-		
 	
 	public boolean canReadField(String fieldname) {
 		return readColumnTypes.get(fieldname) != null;
@@ -152,21 +151,15 @@ public class TableWSDL {
 		return writeColumnTypes.get(fieldname) != null;
 	}
 	
-	
 	/*
-	 * Return true if the table has a field with this name; otherwise false.
-	 * @param fieldname Column name.
-	 * @param displayValues True if DisplayValues are enabled for this table.
-	 * @return
-	public boolean hasField(String fieldname, boolean displayValues) {
-		Map<String,String> fields = getColumnTypes();
-		if (fields.get(fieldname) != null) return true;
-		if (displayValues && fieldname.startsWith("dv_")) {
-			String refname = fieldname.substring(3);
-			return fields.get(refname) != null;
-		}
-		return false;
-	}
+	 * Return the list of fields that are NOT in the provided list
 	 */
+	public FieldNames invert(FieldNames include) {
+		FieldNames exclude = new FieldNames();
+		for (String name : this.readColumnNames) {
+			if (!include.contains(name)) exclude.add(name);
+		}
+		return exclude;
+	}
 
 }

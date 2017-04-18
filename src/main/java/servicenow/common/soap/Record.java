@@ -25,7 +25,7 @@ import servicenow.common.soap.XMLFormatter;
  * 
  * @author Giles Lewis
  */
-public final class Record {
+public abstract class Record {
 	
 	final protected Table table;
 	final protected Key key;
@@ -40,16 +40,9 @@ public final class Record {
 		this.element = element;
 		this.ns = element.getNamespace();
 		String sysid = element.getChildText("sys_id", ns);
-		if (sysid == null || sysid.length() == 0)
-			throw new SoapResponseException(this.table, 
-				"Missing sys_id in SOAP response" + 
-				" (probably a missing Access Control)", getXML());
-		key = new Key(sysid);
+		this.key = (sysid == null || sysid.length() == 0) ? null : new Key(sysid);
 		String updated_on = element.getChildText("sys_updated_on", ns);
 		String created_on = element.getChildText("sys_created_on", ns);
-		if (created_on == null)
-			throw new SoapResponseException(this.table, 
-				"Missing sys_created_on", getXML());
 		this.createdTimestamp =
 			created_on == null ? null : new DateTime(created_on);
 		this.updatedTimestamp =
@@ -95,8 +88,8 @@ public final class Record {
 		return XMLFormatter.format(element, pretty);
 	}
 	
-	public List<String> getFieldNames() {
-		ArrayList<String> result = new ArrayList<String>();
+	public FieldNames getFieldNames() {
+		FieldNames result = new FieldNames();
 		for (Element field : element.getChildren()) {
 			result.add(field.getName());
 		}

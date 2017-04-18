@@ -22,45 +22,46 @@ public class Metrics {
 	private Integer consumed = null; 
 	private Integer expected = null;
 	
-	public int recordsInserted()  { return this.inserts; }
-	public int recordsUpdated()   { return this.updates; }
-	public int recordsDeleted()   { return this.deletes; }
-	public int recordsUnchanged() { return this.unchanged; }
+	public synchronized int recordsInserted()  { return this.inserts; }
+	public synchronized int recordsUpdated()   { return this.updates; }
+	public synchronized int recordsDeleted()   { return this.deletes; }
+	public synchronized int recordsUnchanged() { return this.unchanged; }
 	
-	public int recordsPublished() { 
+	public synchronized int recordsPublished() { 
 		return published == null ? 0 : published.intValue(); 
 	}
-	public Integer recordsConsumed()  { 
+	public synchronized Integer recordsConsumed()  { 
 		return consumed == null ? 0 : consumed.intValue(); 
 	}
 	
-	public Integer recordsExpected()  { return this.expected; }
+	public synchronized Integer recordsExpected()  { return this.expected; }
 	
-	void incrementInserts(int count)   { this.inserts += count; }	
-	void incrementUpdates(int count)   { this.updates += count; }
-	void incrementDeletes(int count)   { this.deletes += count; }
-	void incrementUnchanged(int count) { this.unchanged += count; }
+	synchronized void incrementInserts(int count)   { this.inserts += count; }	
+	synchronized void incrementUpdates(int count)   { this.updates += count; }
+	synchronized void incrementDeletes(int count)   { this.deletes += count; }
+	synchronized void incrementUnchanged(int count) { this.unchanged += count; }
 	
-	void incrementInserts()   { incrementInserts(1); }
-	void incrementUpdates()   { incrementUpdates(1); }
-	void incrementDeletes()   { incrementDeletes(1); }
-	void incrementUnchanged() { incrementUnchanged(1); }
+	synchronized void incrementInserts()   { incrementInserts(1); }
+	synchronized void incrementUpdates()   { incrementUpdates(1); }
+	synchronized void incrementDeletes()   { incrementDeletes(1); }
+	synchronized void incrementUnchanged() { incrementUnchanged(1); }
 	
-	void incrementPublished(int count) {
+	synchronized void incrementPublished(int count) {
 		if (published == null) published = new Integer(0);
 		published += count;
 	}
 	
-	void incrementConsumed(int count) {
+	@Deprecated
+	synchronized void incrementConsumed(int count) {
 		if (consumed == null) consumed = new Integer(0);
 		consumed += count;
 	}
 	
-	void setExpected(int count) {
+	synchronized void setExpected(int count) {
 		this.expected = new Integer(count);
 	}
 		
-	Metrics addMetrics(Metrics other) {
+	synchronized Metrics addMetrics(Metrics other) {
 		incrementInserts(other.inserts);
 		incrementUpdates(other.updates);
 		incrementDeletes(other.deletes);
@@ -71,7 +72,7 @@ public class Metrics {
 		return this;
 	}
 	
-	void clear() {
+	synchronized void clear() {
 		this.inserts = 0;
 		this.updates = 0;
 		this.deletes = 0;
@@ -81,31 +82,31 @@ public class Metrics {
 		this.expected = null;
 	}
 	
-	void logInfo(Logger logger) {
+	synchronized void logInfo(Logger logger) {
 		logger.info(inserts + " inserts");
 		logger.info(updates + " updates");
 		if (deletes > 0)   logger.info(deletes + " deletes");
 		if (unchanged > 0) logger.info(unchanged + " unchanged");
 		if (published != null) logger.info(published + " published");
-		if (consumed != null) logger.info(consumed + " consumed");
+		// if (consumed != null) logger.info(consumed + " consumed");
 		if (expected != null) logger.info(expected + " expected");
 	}
 	
-	void addValues(Record rec) {
+	synchronized void addValues(Record rec) {
 		this.inserts += rec.getInt("u_records_inserted");
 		this.updates += rec.getInt("u_records_updated");
 		this.deletes += rec.getInt("u_records_deleted");
 		this.published += rec.getInt("u_records_processed");
 	}
 	
-	void loadValues(Record rec) {
+	synchronized void loadValues(Record rec) {
 		this.inserts = rec.getInt("u_records_inserted");
 		this.updates = rec.getInt("u_records_updated");
 		this.deletes = rec.getInt("u_records_deleted");
 		this.published = rec.getInt("u_records_processed");
 	}
 	
-	FieldValues fieldValues() {
+	synchronized FieldValues fieldValues() {
 		FieldValues values = new FieldValues();
 		values.set("u_records_inserted", recordsInserted());
 		values.set("u_records_updated", recordsUpdated());

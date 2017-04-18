@@ -469,7 +469,7 @@ public class Table {
 		if (responselog.isInfoEnabled())
 			responselog.info(
 				"get " + (success ? "OK" : "FAILED") + " " + sysid);
-		return success ? new Record(this, responseElement) : null;		
+		return success ? new FullRecord(this, responseElement) : null;		
 	}
 
 	/**
@@ -507,15 +507,22 @@ public class Table {
 	 * parameters and extended query parameters.
 	 * @see <a href="http://wiki.servicenow.com/index.php?title=Direct_Web_Service_API_Functions#getRecords">http://wiki.servicenow.com/index.php?title=Direct_Web_Service_API_Functions#getRecords</a>
 	 */
-	RecordList getRecords(Parameters params) 
+	RecordList getRecords(Parameters params)
+			throws IOException, SoapResponseException {
+		return getRecords(params, null);
+	}
+	
+	RecordList getRecords(Parameters params, FieldNames fields) 
 			throws IOException, SoapResponseException {
 		Element method = createXmlElement("getRecords", params);
 		Element responseElement = proxy.callSoap(method, "getRecordsResponse");
 		int size = responseElement.getContentSize();
-		RecordList list = new RecordList(size);
+		RecordList list = new RecordList(this, size);
 		Iterator<Element> iter = responseElement.getChildren().iterator();
 		while (iter.hasNext()) {
-			Record rec = new Record(this, iter.next());
+			Element next = iter.next();
+			Record rec = fields == null ? new FullRecord(this, next) : 
+				new PartialRecord(this, next, fields);
 			list.add(rec);
 		}
 		return list;		
@@ -570,7 +577,7 @@ public class Table {
 	 */
 	public RecordList getRecords(KeyList list, int fromIndex, int toIndex) 
 			throws IOException, SoapResponseException {
-		RecordList result = new RecordList(list.size());
+		RecordList result = new RecordList(this, list.size());
 		while (fromIndex < toIndex) {
 			int tempIndex = fromIndex + this.chunkSize;
 			if (tempIndex > toIndex) tempIndex = toIndex;
@@ -746,6 +753,10 @@ public class Table {
 		return new PetitTableReader(this);
 	}
 	
+	public ParallelTableReader parallelReader(QueryFilter query) 
+			throws InterruptedException, IOException {
+		return new ParallelTableReader(this, query);
+	}
 	/**
 	 * Attach a file to a record in a table.
 	 * 

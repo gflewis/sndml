@@ -5,7 +5,6 @@ import java.util.NoSuchElementException;
 
 import servicenow.common.soap.BasicTableReader;
 import servicenow.common.soap.KeyList;
-import servicenow.common.soap.KeyReader;
 import servicenow.common.soap.Parameters;
 import servicenow.common.soap.QueryFilter;
 import servicenow.common.soap.RecordList;
@@ -85,7 +84,7 @@ public class BasicTableReader extends TableReader {
 	 * for all records that will be retrieved by this reader.
 	 * This method returns all the keys; not simply the keys 
 	 * in the next chunk nor the list of remaining keys.
-	 */
+	 *
 	public KeyList getKeys() 
 			throws IOException, InterruptedException, SoapResponseException {
 		if (this.keys != null) return this.keys;
@@ -95,6 +94,7 @@ public class BasicTableReader extends TableReader {
 		logger.debug("getAllKeys size=" + keys.size());
 		return this.keys;
 	}
+	*/
 
 	/**
 	 * This method is only valid following a call to 
@@ -128,11 +128,27 @@ public class BasicTableReader extends TableReader {
 		}
 		else {
 			// return an empty RecordList
-			chunk = new RecordList();				
+			chunk = new RecordList(this.table, 0);				
 		}
 		finished = (lastRow >= keys.size());
 		firstRow = lastRow;
 		return chunk;
 	}	
 
+	/**
+	 * This method returns the complete list of keys
+	 * for all records that will be retrieved by this reader.
+	 * This method returns all the keys; not simply the keys 
+	 * in the next chunk nor the list of remaining keys.
+	 */
+	public KeyList getKeys() 
+			throws IOException, InterruptedException, SoapResponseException {
+		if (this.keys != null) return this.keys;
+		this.started = true;
+		KeyReader keyreader = new KeyReader(this.table, this.filter, this.sort);
+		this.keys = keyreader.getAllKeys();
+		logger.debug("getAllKeys size=" + keys.size());
+		return this.keys;
+	}
+	
 }

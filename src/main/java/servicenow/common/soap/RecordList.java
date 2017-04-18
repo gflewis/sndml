@@ -16,16 +16,19 @@ import servicenow.common.soap.Table;
  * An array of Records.
  *
  */
+@SuppressWarnings("serial")
 public class RecordList extends ArrayList<Record> {
 	
-	private static final long serialVersionUID = 1L;
-
-	RecordList() {
+	final protected Table table;
+	
+	RecordList(Table table) {
 		super();
+		this.table = table;
 	}
 
-	RecordList(int size) {
-		super.ensureCapacity(size);
+	RecordList(Table table, int size) {
+		super(size);
+		this.table = table;
 	}
 	
 	public RecordIterator iterator() {

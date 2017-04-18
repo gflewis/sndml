@@ -20,14 +20,14 @@ public class ThreadTest {
 
 	Logger logger = AllTests.junitLogger(ThreadTest.class);
 	
-	static int NTHREADS = 6;
+	static int NTHREADS = 10;
 	
 	DateTime getMonth(int i) throws ParseException {
 		assertTrue(i >= 0);
 		assertTrue(i < 12);
 		String mm = Integer.toString(i + 1);
 		if (mm.length() < 2) mm = "0" + mm;
-		String d = "2013-" + mm + "-01 00:00:00";
+		String d = "2015-" + mm + "-01 00:00:00";
 		return new DateTime(d);
 	}
 	
@@ -38,7 +38,7 @@ public class ThreadTest {
 		table.setChunkSize(100);
 		class ReaderThread extends Thread {
 			Table table;
-			QueryFilter filter;			
+			QueryFilter filter;
 			ReaderThread(Table table, QueryFilter filter) 
 					throws InvalidTableNameException, IOException {
 				this.table = table;

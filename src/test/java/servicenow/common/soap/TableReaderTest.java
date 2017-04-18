@@ -1,6 +1,7 @@
 package servicenow.common.soap;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import org.slf4j.Logger;
 
@@ -94,7 +95,8 @@ public class TableReaderTest {
 		}
 		DateTime d1 = first.getUpdatedTimestamp();
 		DateTime d2 = last.getUpdatedTimestamp();
-		assertTrue(d1.compareTo(d2) > 0);
+		assertTrue(d1.compareTo(d2) >= 0);
+		assumeTrue(d1.compareTo(d2) > 0);
 	}
 	
 }

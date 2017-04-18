@@ -1,40 +1,10 @@
 package servicenow.common.datamart;
 
+import servicenow.common.soap.*;
 import java.io.*;
 import java.sql.SQLException;
-
 import org.slf4j.Logger;
 import org.slf4j.MDC;
-
-import servicenow.common.datamart.DatabaseWriter;
-import servicenow.common.datamart.DatamartConfiguration;
-import servicenow.common.datamart.EphemeralJob;
-import servicenow.common.datamart.JobModel;
-import servicenow.common.datamart.JobOperation;
-import servicenow.common.datamart.LoadLimitExceededException;
-import servicenow.common.datamart.LoggerFactory;
-import servicenow.common.datamart.Metrics;
-import servicenow.common.datamart.PersistentJob;
-import servicenow.common.datamart.SqlGenerator;
-import servicenow.common.datamart.Status;
-import servicenow.common.datamart.SuiteController;
-import servicenow.common.datamart.SuiteExecException;
-import servicenow.common.datamart.SuiteInitException;
-import servicenow.common.datamart.SuiteModelException;
-import servicenow.common.soap.BasicTableReader;
-import servicenow.common.soap.DateTime;
-import servicenow.common.soap.InvalidTableNameException;
-import servicenow.common.soap.Key;
-import servicenow.common.soap.KeyList;
-import servicenow.common.soap.QueryFilter;
-import servicenow.common.soap.Record;
-import servicenow.common.soap.RecordList;
-import servicenow.common.soap.Session;
-import servicenow.common.soap.SoapResponseException;
-import servicenow.common.soap.Table;
-import servicenow.common.soap.TableConfiguration;
-import servicenow.common.soap.TableReader;
-
 import org.jdom2.JDOMException;
 
 /**
@@ -310,7 +280,20 @@ public class JobController {
 		}		
 		return published;
 	}
+	
+	// TODO
+	/*
+	private int parallelLoadRecordSets(ParallelTableReader reader, ExecutorService executor) {
+		DatabaseTableWriter writer = 
+				database.getTableWriter(table, sqlTableName, model.isDV());
+		while (reader.hasNextTask()) {
+			Runnable task = reader.getNextTask();
+			Future<RecordList> data =
+		}
 		
+	}
+	*/
+	
 	private void runPrune(DateTime runStart) 
 			throws IOException, InterruptedException, SQLException, 
 				SuiteInitException, SuiteExecException, SuiteModelException {

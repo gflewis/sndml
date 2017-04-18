@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 
-import servicenow.common.soap.KeyList;
 import servicenow.common.soap.Parameters;
 import servicenow.common.soap.QueryFilter;
 import servicenow.common.soap.QuerySort;
@@ -65,6 +64,7 @@ public abstract class TableReader implements Iterator<RecordList>{
 	protected QueryFilter filter = null;
 	protected QuerySort sort = null;
 	protected String viewName = null;
+	// KeyList keys = null;
 		
 	final Logger logger;
 	
@@ -296,7 +296,7 @@ public abstract class TableReader implements Iterator<RecordList>{
 	 */
 	public RecordList getAllRecords() 
 			throws IOException, InterruptedException, SoapResponseException {
-		RecordList result = new RecordList();
+		RecordList result = new RecordList(table);
 		int count = 0;
 		while (hasNext()) {
 			RecordList chunk = nextChunk();
@@ -333,10 +333,6 @@ public abstract class TableReader implements Iterator<RecordList>{
 		return params;
 	}
 
-	@Deprecated
-	public abstract KeyList getKeys() 
-			throws IOException, InterruptedException, SoapResponseException;
-	
 	/**
 	 * Unsupported operation.
 	 * @throws UnsupportedOperationException

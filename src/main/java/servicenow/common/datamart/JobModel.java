@@ -46,7 +46,7 @@ abstract class JobModel {
 	protected boolean truncate = false;
 	protected boolean useCreatedDate = false;
 
-    Logger logger;        
+    Logger logger;
 
     JobModel(SuiteModel suite) {
     	this.suite = suite;

@@ -451,33 +451,33 @@ where [sys_id] = $keyvalue</update>
     </templates>
     <datatypes>
       <!-- Character types -->
-      <typemap glidetype="string" maxsize="3999">VARCHAR(#)</typemap>
-      <typemap glidetype="string" minsize="4000">VARCHAR(4000)</typemap>
+      <typemap glidetype="string" maxsize="3999">varchar(#)</typemap>
+      <typemap glidetype="string" minsize="4000">varchar(max)</typemap>
       <!-- Numeric types -->
-      <typemap glidetype="boolean"         >TINYINT</typemap>
-      <typemap glidetype="integer"         >INT</typemap>
-      <typemap glidetype="numeric"         >INT</typemap>
-      <typemap glidetype="float"           >FLOAT</typemap>
-      <typemap glidetype="decimal"         >DECIMAL</typemap>
+      <typemap glidetype="boolean"         >tinyint</typemap>
+      <typemap glidetype="integer"         >int</typemap>
+      <typemap glidetype="numeric"         >int</typemap>
+      <typemap glidetype="float"           >float</typemap>
+      <typemap glidetype="decimal"         >decimal</typemap>
       <!-- GUID is only used for sys_id (primary key) -->
-      <typemap glidetype="GUID"            >CHAR(32) NOT NULL</typemap>
+      <typemap glidetype="GUID"            >char(32) not null</typemap>
       <!-- Reference types -->
-      <typemap glidetype="reference"       >CHAR(32)</typemap>      
-      <typemap glidetype="variables"       >CHAR(32)</typemap>
-      <typemap glidetype="journal"         >CHAR(32)</typemap>
-      <typemap glidetype="journal_input"   >CHAR(32)</typemap>
-      <typemap glidetype="document_id"     >CHAR(32)</typemap>
+      <typemap glidetype="reference"       >char(32)</typemap>      
+      <typemap glidetype="variables"       >char(32)</typemap>
+      <typemap glidetype="journal"         >char(32)</typemap>
+      <typemap glidetype="journal_input"   >char(32)</typemap>
+      <typemap glidetype="document_id"     >char(32)</typemap>
       <!-- Dates and timestamps -->
-      <typemap glidetype="glide_date"      >DATE</typemap>
+      <typemap glidetype="glide_date"      >date</typemap>
       <!-- Timestamps are always stored in UTC -->
-      <typemap glidetype="glide_date_time" >DATETIME2</typemap>
-      <typemap glidetype="due_date"        >DATETIME2</typemap>
+      <typemap glidetype="glide_date_time" >datetimeoffset</typemap>
+      <typemap glidetype="due_date"        >datetimeoffset</typemap>
       <!-- Durations fields will be stored as number of seconds (NOT milliseconds) -->
-      <typemap glidetype="glide_duration"  >INT</typemap>
-      <typemap glidetype="timer"           >INT</typemap>
+      <typemap glidetype="glide_duration"  >int</typemap>
+      <typemap glidetype="timer"           >int</typemap>
       <!-- Wildcard templates must appear last -->
-      <typemap glidetype="*" maxsize="3999">VARCHAR(#)</typemap>
-      <typemap glidetype="*" minsize="4000">VARCHAR(4000)</typemap>
+      <typemap glidetype="*" maxsize="3999">varchar(#)</typemap>
+      <typemap glidetype="*" minsize="4000">varchar(max)</typemap>
     </datatypes>
     <fieldnames/>
   </sql>  

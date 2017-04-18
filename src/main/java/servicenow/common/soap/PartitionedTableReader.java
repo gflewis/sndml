@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.NoSuchElementException;
 
 import servicenow.common.soap.BasicTableReader;
-import servicenow.common.soap.KeyList;
 import servicenow.common.soap.QueryFilter;
 import servicenow.common.soap.RecordList;
 import servicenow.common.soap.SoapResponseException;
@@ -78,7 +77,7 @@ public class PartitionedTableReader extends TableReader {
 			}
 			else {
 				// return an empty RecordList
-				chunk = new RecordList();
+				chunk = new RecordList(this.table);
 				finished = true;
 				return chunk;
 			}
@@ -89,10 +88,4 @@ public class PartitionedTableReader extends TableReader {
 		return chunk;
 	}
 
-	@Override
-	public KeyList getKeys() 
-			throws IOException, SoapResponseException {
-		throw new UnsupportedOperationException();
-	}
-	
 }

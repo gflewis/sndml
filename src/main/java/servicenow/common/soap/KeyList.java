@@ -65,6 +65,10 @@ public class KeyList extends ArrayList<Key> {
 		return new QueryFilter(queryStr);
 	}
 	
+	public QueryFilter queryFilter() {
+		return this.filter(0,  this.size());
+	}
+	
 	/**
 	 * Return the number of unique values in this list of keys.
 	 */
