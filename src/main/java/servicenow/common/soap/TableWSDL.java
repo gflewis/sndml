@@ -70,6 +70,8 @@ public class TableWSDL {
 				throw new IOException();
 		}
 		String responseBuffer = HttpUtil.readFully(connection);
+		assert responseBuffer != null : "WSDL response is null";
+		assert responseBuffer.length() > 0 : "WSDL response is empty";
 		if (!"text/xml".equals(contentType)) {
 			logger.debug(HttpUtil.getAllHeaders(connection));
 			logger.debug("responseBuffer=" + responseBuffer);

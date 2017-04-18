@@ -22,6 +22,8 @@ import servicenow.common.soap.Record;
 import servicenow.common.soap.Session;
 
 import org.apache.commons.cli.Options;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.jdom2.JDOMException;
 
 /**
@@ -119,6 +121,7 @@ public class Loader {
 		options.addOption("e", "command", true, "Execute a command");
 		options.addOption("js", "suite", true, "Specify name of job suite");
 		options.addOption("resume", false, "Resume a cancelled or aborted suite");
+		options.addOption("debug", false, "Enable log4j debugging");
 		// options.addOption("cancel", false, "Cancel currently running suite");		
 		org.apache.commons.cli.CommandLineParser cparser = 
 				new org.apache.commons.cli.BasicParser();
@@ -126,6 +129,8 @@ public class Loader {
 		@SuppressWarnings("unchecked")
 		LinkedList<String> extras = new LinkedList<String>(line.getArgList());
 
+		if (line.hasOption("debug"))
+			LogManager.getRootLogger().setLevel(Level.DEBUG);
 		String operation = null;
 		String propfilename = line.getOptionValue("p");
 		if (propfilename == null) optionsError("Missing propfilename");

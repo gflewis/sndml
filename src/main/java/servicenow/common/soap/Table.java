@@ -3,6 +3,7 @@ package servicenow.common.soap;
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.jdom2.*;
 
@@ -79,7 +80,7 @@ public class Table {
 	protected boolean validate = true;		
 	protected boolean displayvalues = false;
 	protected Boolean readable = null;
-	
+		
 	/**
 	 * The recommended way to obtain a Table
 	 * object is the
@@ -87,6 +88,9 @@ public class Table {
 	 */
 	Table(Session session, String tablename) 
 			throws IOException, JDOMException, InvalidTableNameException {
+		
+		if (!tablename.matches("\\w+"))
+			throw new InvalidTableNameException(tablename);
 		this.tablename = tablename;
 		this.session = session;
 		this.config = new TableConfiguration(session.getConfiguration(), tablename);
