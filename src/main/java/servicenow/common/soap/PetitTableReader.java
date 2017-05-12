@@ -76,10 +76,10 @@ public class PetitTableReader extends TableReader {
 	public RecordList nextChunk() 
 			throws IOException, SoapResponseException, NoSuchElementException {
 		if (finished) throw new NoSuchElementException("no more data");
-		assert chunkSize > 1;
+		assert pageSize > 1;
 		started = true;
 		RecordList chunk;
-		int lastRow = firstRow + chunkSize;
+		int lastRow = firstRow + pageSize;
 		Parameters params = new Parameters();
 		params.add(getFilterParam());
 		params.add(getSortParam());
@@ -87,7 +87,7 @@ public class PetitTableReader extends TableReader {
 		params.add(getWindowParams(firstRow, lastRow));
 		chunk = table.getRecords(params);
 		recordsRead += chunk.size();
-		finished = (chunk.size() < chunkSize);
+		finished = (chunk.size() < pageSize);
 		firstRow = lastRow;
 		return chunk;
 	}

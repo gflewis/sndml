@@ -30,7 +30,7 @@ public class PropertiesTest {
 		Session instance = AllTests.getSession();
 		Table sys_email = instance.table("sys_email");
 		TableReader reader = sys_email.reader();
-		int chunkSize = reader.chunkSize;
+		int chunkSize = reader.pageSize;
 		log.info("limit=" + chunkSize);
 		assertTrue(chunkSize > 0);
 		assertTrue(chunkSize <= 50);

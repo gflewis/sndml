@@ -3,7 +3,6 @@ package servicenow.common.soap;
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import org.jdom2.*;
 
@@ -55,7 +54,6 @@ public class Table {
 	final Session session;
 	final TableConfiguration config;
 	final Namespace nsTNS; // Table Namespace
-	// final Namespace nsEle; // Element Namespace
 	final TableProxy proxy;
 	final TableWSDL wsdl;
 	TableWSDL dvWsdl;
@@ -63,12 +61,12 @@ public class Table {
 	// these two loggers are visible to other classes in this package
 	final Logger requestlog, responselog;
 
-	static public final int DEFAULT_CHUNK_SIZE = 200;
+	static public final int DEFAULT_PAGE_SIZE = 200;
 	
 	TableSchema schema = null;
 	
 	// Number of records to be retrieved in a single getRecords call
-	int chunkSize;
+	int pageSize;
 	
 	/*
 	 * The validate property disables schema validations.
@@ -102,8 +100,8 @@ public class Table {
 		proxy = new TableProxy(this);
 		wsdl = new TableWSDL(session, tablename);
 		// this parameter can be named either "chunk" or "limit"
-		this.chunkSize = config.getInt("chunk",
-				config.getInt("limit", DEFAULT_CHUNK_SIZE));
+		this.pageSize = config.getInt("chunk",
+				config.getInt("limit", DEFAULT_PAGE_SIZE));
 		this.validate = session.validate;
 	}
 	
@@ -174,13 +172,13 @@ public class Table {
 	 * objects created from this {@link Table}.
 	 * Affects the number of records to be retrieved in any
 	 * single getRecords Web Service call.
-	 * @see TableReader#setChunkSize(int)
+	 * @see TableReader#setPageSize(int)
 	 */
 	public synchronized Table setChunkSize(int size) {
 		requestlog.info("setLimit " + size);
 		if (size <= 0) 
 			throw new IllegalArgumentException("invalid limit: " + size);
-		this.chunkSize = size;
+		this.pageSize = size;
 		return this;
 	}
 	
@@ -583,7 +581,7 @@ public class Table {
 			throws IOException, SoapResponseException {
 		RecordList result = new RecordList(this, list.size());
 		while (fromIndex < toIndex) {
-			int tempIndex = fromIndex + this.chunkSize;
+			int tempIndex = fromIndex + this.pageSize;
 			if (tempIndex > toIndex) tempIndex = toIndex;
 			QueryFilter filter = list.filter(fromIndex, tempIndex);
 			String queryStr = filter.toString();

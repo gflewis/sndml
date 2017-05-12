@@ -24,7 +24,7 @@ public class ParallelTableReader extends TableReader {
 			KeyReader keyreader = new KeyReader(this.table, this.filter, this.sort);
 			this.keys = keyreader.getAllKeys();
 			int size = this.keys.size();
-			this.numChunks = size / chunkSize + (size % chunkSize == 0 ? 0 : 1);
+			this.numChunks = size / pageSize + (size % pageSize == 0 ? 0 : 1);
 			logger.debug("getAllKeys size=" + this.keys.size());			
 		}
 		return this.keys;
@@ -40,8 +40,8 @@ public class ParallelTableReader extends TableReader {
 			throws SoapResponseException, IOException, InterruptedException {
 		RecordList chunk;
 		if (!this.started) getKeys();
-		int firstRow = index * chunkSize;
-		int lastRow = firstRow + chunkSize;
+		int firstRow = index * pageSize;
+		int lastRow = firstRow + pageSize;
 		if (lastRow > keys.size()) lastRow = keys.size();
 		if (lastRow > firstRow) {
 			QueryFilter keyfilter = keys.filter(firstRow, lastRow);

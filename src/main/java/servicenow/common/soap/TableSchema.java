@@ -25,7 +25,7 @@ import servicenow.common.soap.TableSchema;
  */
 public class TableSchema {
 
-	private final Table table;
+	// private final Table table;
 	private final Session session;
 	private final String tablename;
 	private final String parentname;
@@ -35,7 +35,7 @@ public class TableSchema {
 	protected TableSchema(Table table) 
 			throws IOException, JDOMException, InterruptedException,
 				InvalidTableNameException {
-		this.table = table;
+		// this.table = table;
 		this.session = table.session;
 		this.tablename = table.getName();
 		logger.debug("get definition for table " + tablename);
@@ -122,6 +122,7 @@ public class TableSchema {
 	/**
 	 * Return true if the table has a field with this name; otherwise false.
 	 */
+	/*
 	@Deprecated
 	public boolean isDefined(String fieldname) {
 		if (fields.get(fieldname) != null) return true;
@@ -131,6 +132,7 @@ public class TableSchema {
 		}
 		return false;
 	}
+	*/
 	
 	/**
 	 * Return true if the table has a reference field with this name; otherwise false.

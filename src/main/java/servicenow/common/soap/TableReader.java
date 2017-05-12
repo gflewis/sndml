@@ -57,7 +57,7 @@ import servicenow.common.soap.TableReader;
 public abstract class TableReader implements Iterator<RecordList>{
 
 	protected final Table table;
-	protected int chunkSize;
+	protected int pageSize;
 	protected boolean started = false;
 	protected boolean finished = false;
 	protected int recordsRead = 0;
@@ -76,7 +76,7 @@ public abstract class TableReader implements Iterator<RecordList>{
 	protected TableReader(Table table) throws IOException {
 		assert table != null;
 		this.table = table;
-		this.chunkSize = table.chunkSize;
+		this.pageSize = table.pageSize;
 		this.logger = table.responselog;
 	}
 	
@@ -198,11 +198,11 @@ public abstract class TableReader implements Iterator<RecordList>{
 	 * in each call to {@link #nextChunk()}.
 	 * @return The modified reader.
 	 */
-	public TableReader setChunkSize(int size) {
+	public TableReader setPageSize(int size) {
 		table.requestlog.info("setLimit " + size);
 		if (size < 1) 
 			throw new IllegalArgumentException("limit=" + size);
-		this.chunkSize = size;
+		this.pageSize = size;
 		return this;
 	}
 

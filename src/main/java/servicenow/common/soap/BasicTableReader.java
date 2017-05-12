@@ -111,10 +111,10 @@ public class BasicTableReader extends TableReader {
 			throws IOException, InterruptedException, 
 				SoapResponseException, NoSuchElementException {
 		if (finished) throw new NoSuchElementException("no more data");
-		assert chunkSize > 1;
+		assert pageSize > 1;
 		started = true;
 		RecordList chunk;
-		int lastRow = firstRow + chunkSize;
+		int lastRow = firstRow + pageSize;
 		if (keys == null) getKeys();
 		if (lastRow > keys.size()) lastRow = keys.size();
 		if (lastRow > firstRow) {

@@ -62,7 +62,7 @@ class KeyReader {
 		KeyList chunk = table.getKeys(params);
 		if (chunkSize > 0) {
 			// This is a kludge.
-			// The original code was (chunk.size() < chunkSize).
+			// The original code was (chunk.size() < pageSize).
 			// If you ask for 20000 keys and you get 19999 keys
 			// then you should be done.
 			// However, if there are ACLs in place,

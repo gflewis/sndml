@@ -1,6 +1,7 @@
 package servicenow.common.soap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @SuppressWarnings("serial")
 public class FieldNames extends ArrayList<String> {
@@ -11,6 +12,10 @@ public class FieldNames extends ArrayList<String> {
 
 	public FieldNames(int size) {
 		super(size);
+	}
+	
+	public FieldNames(String names) {
+		super(Arrays.asList(names.split(",")));
 	}
 	
 	public String toString() {

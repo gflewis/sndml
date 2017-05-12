@@ -69,4 +69,16 @@ public class WSDLTest {
 		assertFalse(wsdl.canReadField("createdxxxxx"));
 	}
 	
+	@Test
+	public void testInvest() throws Exception {
+		Table table = AllTests.getSession().table("incident").setDisplayValues(false);
+		TableWSDL wsdl = table.getWSDL();
+		FieldNames allColumns = wsdl.getReadColumnNames();
+		int items = allColumns.size();
+		FieldNames include = new FieldNames("sys_id,sys_created_on,sys_updated_on");
+		assertEquals(3, include.size());
+		FieldNames exclude = wsdl.invert(include);
+		assertEquals(items - 3, exclude.size());		
+		logger.info("exclude=" + exclude.toString());
+	}
 }
