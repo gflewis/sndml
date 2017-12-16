@@ -33,13 +33,13 @@
     </dependency>
     <dependency>
       <!--
-        to add ojdbc6 to local repo
+        to add ojdbc7 to local repo
           mvn install:install-file -Dfile=ojdbc6.jar
-          -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=12.1.0.2
+          -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=12.1.0.2
           -Dpackaging=jar -DgeneratePom=true 
         -->
       <groupId>com.oracle</groupId>
-      <artifactId>ojdbc6</artifactId>
+      <artifactId>ojdbc7</artifactId>
       <version>12.1.0.2</version>
       <scope>compile</scope>
       <optional>true</optional>

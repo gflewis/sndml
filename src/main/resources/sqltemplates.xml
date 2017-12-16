@@ -73,10 +73,10 @@ where "sys_id" = $keyvalue</update>
       <typemap glidetype="journal_input"   >CHARACTER(32)</typemap>
       <typemap glidetype="document_id"     >CHARACTER(32)</typemap>
       <!-- Dates and timestamps -->
-      <typemap glidetype="glide_date"      >DATE</typemap>
+      <typemap glidetype="glide_date"      >DATE NULL</typemap>
       <!-- Timestamps are always stored in UTC -->
-      <typemap glidetype="glide_date_time" >TIMESTAMP</typemap>
-      <typemap glidetype="due_date"        >TIMESTAMP</typemap>
+      <typemap glidetype="glide_date_time" >TIMESTAMP NULL</typemap>
+      <typemap glidetype="due_date"        >TIMESTAMP NULL</typemap>
       <!-- Durations fields will be stored as number of seconds (NOT milliseconds) -->
       <typemap glidetype="glide_duration"  >INTEGER</typemap>
       <typemap glidetype="timer"           >INTEGER</typemap>
@@ -387,7 +387,7 @@ WHERE sys_id = $keyvalue</update>
     <datatypes>
       <!-- Character types -->
       <typemap glidetype="string" maxsize="3999">VARCHAR(#)</typemap>
-      <typemap glidetype="string" minsize="4000">BLOB</typemap>
+      <typemap glidetype="string" minsize="4000">TEXT</typemap>
       <!-- Numeric types -->
       <typemap glidetype="boolean"         >BOOLEAN</typemap>
       <typemap glidetype="integer"         >INTEGER</typemap>
@@ -403,16 +403,16 @@ WHERE sys_id = $keyvalue</update>
       <typemap glidetype="journal_input"   >CHAR(32)</typemap>
       <typemap glidetype="document_id"     >CHAR(32)</typemap>
       <!-- Dates and timestamps -->
-      <typemap glidetype="glide_date"      >DATE</typemap>
+      <typemap glidetype="glide_date"      >DATE NULL</typemap>
       <!-- Timestamps are always stored in UTC -->
-      <typemap glidetype="glide_date_time" >TIMESTAMP</typemap>
-      <typemap glidetype="due_date"        >TIMESTAMP</typemap>
+      <typemap glidetype="glide_date_time" >TIMESTAMP NULL</typemap>
+      <typemap glidetype="due_date"        >TIMESTAMP NULL</typemap>
       <!-- Durations fields will be stored as number of seconds (NOT milliseconds) -->
       <typemap glidetype="glide_duration"  >INTEGER</typemap>
       <typemap glidetype="timer"           >INTEGER</typemap>
       <!-- Wildcard templates must appear last -->
       <typemap glidetype="*" maxsize="3999">VARCHAR(#)</typemap>
-      <typemap glidetype="*" minsize="4000">BLOB</typemap>
+      <typemap glidetype="*" minsize="4000">TEXT</typemap>
     </datatypes>
     <fieldnames>
       <!-- not required if using quotes -->
