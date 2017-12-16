@@ -67,7 +67,7 @@ where "sys_id" = $keyvalue</update>
       <!-- GUID is only used for sys_id (primary key) -->
       <typemap glidetype="GUID"            >CHARACTER(32) NOT NULL</typemap>
       <!-- Reference types -->
-      <typemap glidetype="reference"       >CHARACTER(32)</typemap>      
+      <typemap glidetype="reference"       >CHARACTER(#)</typemap>      
       <typemap glidetype="variables"       >CHARACTER(32)</typemap>
       <typemap glidetype="journal"         >CHARACTER(32)</typemap>
       <typemap glidetype="journal_input"   >CHARACTER(32)</typemap>
@@ -137,7 +137,7 @@ WHERE SYS_ID=$keyvalue</update>
       <!-- GUID is only used for sys_id (primary key) -->
       <typemap glidetype="GUID"            >CHAR(32 BYTE) NOT NULL</typemap>
       <!-- Reference types -->
-      <typemap glidetype="reference"       >CHAR(32 BYTE)</typemap>      
+      <typemap glidetype="reference"       >CHAR(# BYTE)</typemap>      
       <typemap glidetype="variables"       >CHAR(32 BYTE)</typemap>
       <typemap glidetype="journal"         >CHAR(32 BYTE)</typemap>
       <typemap glidetype="journal_input"   >CHAR(32 BYTE)</typemap>
@@ -211,7 +211,7 @@ WHERE SYS_ID=$keyvalue</update>
       <!-- GUID is only used for sys_id (primary key) -->
       <typemap glidetype="GUID"            >CHAR(32 BYTE) NOT NULL</typemap>
       <!-- Reference types -->
-      <typemap glidetype="reference"       >CHAR(32 BYTE)</typemap>      
+      <typemap glidetype="reference"       >CHAR(# BYTE)</typemap>      
       <typemap glidetype="variables"       >CHAR(32 BYTE)</typemap>
       <typemap glidetype="journal"         >CHAR(32 BYTE)</typemap>
       <typemap glidetype="journal_input"   >CHAR(32 BYTE)</typemap>
@@ -397,7 +397,7 @@ WHERE sys_id = $keyvalue</update>
       <!-- GUID is only used for sys_id (primary key) -->
       <typemap glidetype="GUID"            >CHAR(32) NOT NULL</typemap>
       <!-- Reference types -->
-      <typemap glidetype="reference"       >CHAR(32)</typemap>      
+      <typemap glidetype="reference"       >CHAR(#)</typemap>      
       <typemap glidetype="variables"       >CHAR(32)</typemap>
       <typemap glidetype="journal"         >CHAR(32)</typemap>
       <typemap glidetype="journal_input"   >CHAR(32)</typemap>
@@ -462,7 +462,7 @@ where [sys_id] = $keyvalue</update>
       <!-- GUID is only used for sys_id (primary key) -->
       <typemap glidetype="GUID"            >char(32) not null</typemap>
       <!-- Reference types -->
-      <typemap glidetype="reference"       >char(32)</typemap>      
+      <typemap glidetype="reference"       >char(#)</typemap>      
       <typemap glidetype="variables"       >char(32)</typemap>
       <typemap glidetype="journal"         >char(32)</typemap>
       <typemap glidetype="journal_input"   >char(32)</typemap>
@@ -523,7 +523,7 @@ where sys_id = $keyvalue</update>
       <!-- GUID is only used for sys_id (primary key) -->
       <typemap glidetype="GUID"            >char(32) NOT NULL</typemap>
       <!-- Reference types -->
-      <typemap glidetype="reference"       >char(32)</typemap>      
+      <typemap glidetype="reference"       >char(#)</typemap>      
       <typemap glidetype="variables"       >char(32)</typemap>
       <typemap glidetype="journal"         >char(32)</typemap>
       <typemap glidetype="journal_input"   >char(32)</typemap>
@@ -584,7 +584,7 @@ where "sys_id" = $keyvalue</update>
       <!-- GUID is only used for sys_id (primary key) -->
       <typemap glidetype="GUID"            >CHARACTER(32) NOT NULL</typemap>
       <!-- Reference types -->
-      <typemap glidetype="reference"       >CHARACTER(32)</typemap>      
+      <typemap glidetype="reference"       >CHARACTER(#)</typemap>      
       <typemap glidetype="variables"       >CHARACTER(32)</typemap>
       <typemap glidetype="journal"         >CHARACTER(32)</typemap>
       <typemap glidetype="journal_input"   >CHARACTER(32)</typemap>
