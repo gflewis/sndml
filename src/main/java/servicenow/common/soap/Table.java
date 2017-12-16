@@ -755,6 +755,7 @@ public class Table {
 		return new PetitTableReader(this);
 	}
 	
+	@Deprecated
 	public ParallelTableReader parallelReader(QueryFilter query) 
 			throws InterruptedException, IOException {
 		return new ParallelTableReader(this, query);

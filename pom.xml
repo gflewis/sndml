@@ -314,7 +314,7 @@
               </transformers>
               <artifactSet>
                 <includes>
-                  <include>ojdbc6:ojdbc6</include>
+                  <include>com.oracle:*</include>
                   <include>org.apache.commons:*</include>
                   <include>commons-*:*</include>
                   <include>com.rabbitmq:*</include>

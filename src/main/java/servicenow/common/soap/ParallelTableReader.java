@@ -2,8 +2,8 @@ package servicenow.common.soap;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Future;
 
+@Deprecated
 public class ParallelTableReader extends TableReader {
 
 	KeyList keys;

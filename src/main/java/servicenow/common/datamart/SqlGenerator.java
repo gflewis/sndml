@@ -1,4 +1,4 @@
-package servicenow.common.datamart;
+	package servicenow.common.datamart;
 
 import java.io.*;
 import java.util.*;
@@ -46,11 +46,19 @@ public class SqlGenerator {
 	public SqlGenerator(DatamartConfiguration config, DatabaseWriter database)  
 			throws ResourceException, SQLException {
 		InputStream sqlConfigStream;
-		sqlConfigStream = 
-			ClassLoader.getSystemResourceAsStream(
-				config.getString("templates",  "sqltemplates.xml"));
-		if (sqlConfigStream == null)
-			throw new ResourceException("Unable to locate resource: sqltemplates.xml");
+		String templatesName = config.getString("templates", "");
+		if (templatesName.length() > 0)
+			try {
+				sqlConfigStream = new FileInputStream(templatesName);
+			}
+			catch (IOException e) {
+				throw new ResourceException(e);
+			}
+		else { 
+			sqlConfigStream = ClassLoader.getSystemResourceAsStream("sqltemplates.xml");			
+			if (sqlConfigStream == null)
+				throw new ResourceException("Unable to locate resource: sqltemplates.xml");
+			}
 		SAXBuilder xmlbuilder = new SAXBuilder();
 		try {
 			xmldocument = xmlbuilder.build(sqlConfigStream);

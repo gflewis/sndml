@@ -123,6 +123,11 @@ public class ResourceManager {
 	
 	static Connection getNewConnection(DatamartConfiguration config) {
 		try {
+			String driver = config.getString("driver",  "");
+			if (driver.length() > 0) {
+				logger.info("driver=" + driver);
+				Class.forName(driver);
+			}
 			String dburl  = config.getRequiredString("url");
 			String dbuser = config.getRequiredString("username");
 			String schema = config.getString("schema");
@@ -132,6 +137,8 @@ public class ResourceManager {
 			return DriverManager.getConnection(dburl, dbuser, dbpass);
 		}
 		catch (SQLException e) {
+			throw new ResourceException(e);
+		} catch (ClassNotFoundException e) {
 			throw new ResourceException(e);
 		}
 	}
