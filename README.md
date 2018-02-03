@@ -8,3 +8,9 @@ The ServiceNow Data Mart Loader is a Java application which uses ServiceNow's We
 This program is freely distributed software. You are welcome to redistribute and/or modify it. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY, explicit or implied. 
 
 Documentation please refer to the the [SNDML Wiki](https://github.com/gflewis/sndml/wiki)
+
+<hr/>
+
+This is the repo for SNDML 2.x.
+SNDML 3.x has now entered beta testing. For information refer to:
+https://github.com/gflewis/sndml3
