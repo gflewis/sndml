@@ -13,5 +13,5 @@ Documentation please refer to the the [SNDML Wiki](https://github.com/gflewis/sn
 
 This is the repo for SNDML 2.x.
 
-SNDML 3.x has now entered beta testing. For information refer to:
+SNDML 3.x is now released. For information refer to:
 https://github.com/gflewis/sndml3
