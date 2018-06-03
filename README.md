@@ -1,7 +1,7 @@
 # ServiceNow Datamart Loader
 
-* This is the repo for SNDML 2.x.
-* SNDML 3.x has been released and is located at https://github.com/gflewis/sndml3
+* This is the repo for SNDML 2.
+* SNDML 3 has been released and is located at https://github.com/gflewis/sndml3
 <hr/>
 
 The ServiceNow Data Mart Loader is a Java application which uses ServiceNow's Web Services (SOAP) API to extract meta-data and data from ServiceNow. The Loader automatically creates tables in an SQL database based on meta-data extracted from ServiceNow. It supports a variety of load and synchronization operations including 
