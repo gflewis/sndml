@@ -1,6 +1,7 @@
 # ServiceNow Datamart Loader
 
 * This is the repo for SNDML 2.
+* **This version of the product is no longer supported.**
 * SNDML 3 has been released and is located at https://github.com/gflewis/sndml3
 <hr/>
 
