@@ -2,7 +2,7 @@
 
 * This is the repo for SNDML version 2, which is no longer supported.
 * You are probably looking for SNDML version 3, which is the latest version.
-* The version 3 repo is here:
+* The latest version is here:
 * * https://github.com/gflewis/sndml3
 
 <hr/>
